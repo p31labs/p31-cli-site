@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration — P31 Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#060a12;--surface:#0b1222;--border:#1a2640;--text:#d1d9e8;--muted:#6b7d9e;--neon:#39ff14;--teal:#2dd4bf;--gold:#fbbf24;--radius:8px}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7}
+    .container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border)}
+    .logo{font-weight:900;font-size:1.4rem;color:var(--neon);letter-spacing:-.5px}
+    .logo span{color:var(--teal)}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;margin-left:1.5rem;transition:color .15s}
+    .nav-links a:hover{color:var(--neon)}
+    h1{font-size:2rem;font-weight:800;margin:2.5rem 0 .3rem;color:var(--neon)}
+    h2{font-size:1.3rem;font-weight:700;margin:2rem 0 .5rem;color:var(--teal)}
+    h3{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .3rem;color:var(--gold)}
+    p,li{color:var(--muted);margin-bottom:.5rem}
+    ul{padding-left:1.5rem;margin-bottom:1rem}
+    li{margin-bottom:.3rem}
+    code{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);padding:.15rem .4rem;border-radius:4px;color:var(--neon)}
+    pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;overflow-x:auto}
+    pre code{background:none;padding:0;font-size:.82rem}
+    a{color:var(--teal);text-decoration:none}
+    a:hover{color:var(--neon)}
+    .note{background:var(--surface);border-left:3px solid var(--teal);padding:.8rem 1rem;border-radius:0 var(--radius) var(--radius) 0;margin:1rem 0;font-size:.9rem}
+    table{width:100%;border-collapse:collapse;margin:1rem 0}
+    th,td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border);font-size:.9rem}
+    th{color:var(--teal);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+    td{color:var(--muted)}
+    td:first-child{color:var(--neon);font-family:'JetBrains Mono',monospace;font-size:.82rem;white-space:nowrap}
+    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;margin-top:3rem}
+  </style>
+</head>
+<body>
+<nav class="container">
+  <div class="logo">P31<span>Labs</span> <span style="color:var(--muted);font-weight:400;font-size:.9rem">/ docs</span></div>
+  <div class="nav-links"><a href="../">Home</a><a href="index.html">Docs</a><a href="https://github.com/p31labs/p31-cli">GitHub</a></div>
+</nav>
+<div class="container">
+<h1>Configuration</h1>
+<p>The P31 CLI reads configuration from <code>~/.p31/config.yaml</code>.</p>
+
+<h2>Config File Schema</h2>
+<pre><code># ~/.p31/config.yaml
+# All fields are optional; defaults shown.
+
+# AI Router Proxy
+proxy_url: http://localhost:4001/v1
+proxy_model: flash        # flash, premium, scavenger
+
+# Local Ollama (legacy, falls back if proxy unavailable)
+ollama_url: http://localhost:11434
+
+# P31 Services
+k4_cage_url: https://k4-cage.trimtab-signal.workers.dev
+phos_url: https://phos.p31ca.org</code></pre>
+
+<h2>Environment Variables</h2>
+<p>Environment variables override config file values:</p>
+<table>
+  <tr><th>Variable</th><th>Purpose</th></tr>
+  <tr><td>P31_PROXY_URL</td><td>Override proxy endpoint</td></tr>
+  <tr><td>P31_PROXY_MODEL</td><td>Override default model</td></tr>
+  <tr><td>P31_OLLAMA_URL</td><td>Override Ollama endpoint</td></tr>
+  <tr><td>P31_K4_CAGE_URL</td><td>Override K4 Cage URL</td></tr>
+</table>
+
+<h2>Command-line Flags</h2>
+<pre><code>p31 chat --model premium   # Override model for this session
+p31 --verbose              # Enable debug logging
+p31 --config /path/to/config.yaml  # Use a custom config file</code></pre>
+
+<h2>Model Tiers</h2>
+<table>
+  <tr><th>Model</th><th>Use Case</th><th>Cost</th></tr>
+  <tr><td>scavenger</td><td>Simple tasks, low spoons</td><td>$0 (Gemini 2.5 Flash)</td></tr>
+  <tr><td>flash</td><td>Most reasoning tasks</td><td>$0.14/1M input</td></tr>
+  <tr><td>premium</td><td>Complex architecture, high spoons</td><td>$2.19/1M input</td></tr>
+</table>
+
+<h2>MCP Server Configuration</h2>
+<p>MCP servers are configured in the Go source (<code>cmd/chat.go</code>, <code>initMCP()</code>). In the future, this will move to a config file.</p>
+</div>
+<footer class="container"><p><a href="https://p31-cli.pages.dev">p31-cli.pages.dev</a> &nbsp;&middot;&nbsp; MIT License</p></footer>
+</body>
+</html>

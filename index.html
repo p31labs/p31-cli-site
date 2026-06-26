@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P31 — Sovereign AI Infrastructure</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{
+      --bg:#060a12;
+      --surface:#0b1222;
+      --border:#1a2640;
+      --text:#d1d9e8;
+      --muted:#6b7d9e;
+      --neon:#39ff14;
+      --teal:#2dd4bf;
+      --gold:#fbbf24;
+      --purple:#a78bfa;
+      --radius:12px;
+    }
+    html{scroll-behavior:smooth}
+    body{
+      background:var(--bg);
+      color:var(--text);
+      font-family:'Inter',system-ui,-apple-system,sans-serif;
+      line-height:1.6;
+      -webkit-font-smoothing:antialiased;
+    }
+    .container{max-width:1100px;margin:0 auto;padding:0 1.5rem}
+
+    nav{
+      display:flex;justify-content:space-between;align-items:center;
+      padding:1.2rem 0;border-bottom:1px solid var(--border);
+      flex-wrap:wrap;gap:1rem;
+    }
+    .logo{font-weight:900;font-size:1.5rem;color:var(--neon);letter-spacing:-.5px}
+    .logo span{color:var(--teal)}
+    .nav-links{display:flex;gap:1.5rem;align-items:center}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;font-weight:500;transition:color .15s}
+    .nav-links a:hover{color:var(--neon)}
+    .nav-links .btn{
+      background:var(--teal);color:#060a12;padding:.4rem 1rem;border-radius:30px;
+      font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px;
+    }
+    .nav-links .btn:hover{background:var(--neon);color:#060a12}
+
+    .hero{
+      text-align:center;padding:5rem 0 3rem;position:relative;overflow:hidden;
+    }
+    .hero-bg{
+      position:absolute;top:-50%;left:50%;translate:-50% 0;
+      width:800px;height:800px;
+      background:radial-gradient(circle,rgba(57,255,20,.03) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero h1{font-size:3.5rem;font-weight:900;line-height:1.15;margin-bottom:1.2rem;position:relative}
+    .hero h1 .accent{color:var(--neon)}
+    .hero h1 .teal{color:var(--teal)}
+    .hero h1 .dim{color:var(--muted)}
+    .hero p{font-size:1.25rem;color:var(--muted);max-width:680px;margin:0 auto 2rem;position:relative}
+    .badges{display:flex;justify-content:center;gap:.75rem;flex-wrap:wrap;margin-bottom:2.5rem;position:relative}
+    .badge{
+      background:var(--surface);border:1px solid var(--border);
+      padding:.4rem 1rem;border-radius:30px;font-size:.85rem;color:var(--muted);
+    }
+    .badge strong{color:var(--neon);font-weight:600}
+
+    .install-box{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius);padding:2rem;max-width:680px;margin:0 auto 2rem;text-align:left;
+    }
+    .install-box .label{font-weight:600;margin-bottom:1rem;color:var(--teal);font-size:1rem}
+    .install-box .cmd{
+      background:#050911;border:1px solid var(--border);
+      padding:.8rem 1.2rem;border-radius:8px;
+      font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--neon);
+      display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap;
+    }
+    .install-box .cmd code{word-break:break-all}
+    .install-box .copy-btn{
+      background:var(--teal);color:#060a12;border:none;padding:.25rem .8rem;border-radius:30px;
+      font-size:.7rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;
+    }
+    .install-box .copy-btn:hover{background:var(--neon)}
+    .install-box .alt-methods{margin-top:1rem;font-size:.85rem;color:var(--muted);line-height:1.8}
+    .install-box .alt-methods code{color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:.8rem}
+
+    .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:1.5rem;margin:4rem 0}
+    .feature{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--radius);padding:2rem 1.5rem;transition:border-color .2s,transform .2s;
+    }
+    .feature:hover{border-color:var(--teal);transform:translateY(-2px)}
+    .feature .icon{font-size:2rem;margin-bottom:.5rem}
+    .feature h3{font-size:1.1rem;margin-bottom:.5rem;font-weight:700}
+    .feature h3 .accent{color:var(--neon)}
+    .feature h3 .teal{color:var(--teal)}
+    .feature p{color:var(--muted);font-size:.9rem;line-height:1.7}
+
+    .section-title{font-size:1.8rem;font-weight:800;text-align:center;margin:4rem 0 .5rem}
+    .section-title .accent{color:var(--neon)}
+    .section-title .teal{color:var(--teal)}
+    .section-sub{text-align:center;color:var(--muted);margin-bottom:2rem;font-size:1rem}
+
+    .cta-section{
+      text-align:center;padding:4rem 0;border-top:1px solid var(--border);margin-top:2rem;
+    }
+    .cta-section h2{font-size:2rem;font-weight:800;margin-bottom:.8rem}
+    .cta-section p{color:var(--muted);margin-bottom:1.5rem}
+    .cta-btn{
+      display:inline-block;background:var(--neon);color:#060a12;
+      padding:.8rem 2rem;border-radius:30px;font-weight:700;font-size:1rem;
+      text-decoration:none;transition:opacity .2s;
+    }
+    .cta-btn:hover{opacity:.85}
+    .cta-btn.secondary{background:var(--surface);color:var(--teal);border:1px solid var(--teal);margin-left:1rem}
+
+    footer{
+      text-align:center;padding:2.5rem 0;border-top:1px solid var(--border);
+      color:var(--muted);font-size:.85rem;margin-top:2rem;
+    }
+    footer a{color:var(--teal);text-decoration:none}
+    footer a:hover{color:var(--neon)}
+
+    @media(max-width:640px){
+      .hero h1{font-size:2.2rem}
+      .hero{padding:3rem 0 2rem}
+      .install-box .cmd{font-size:.75rem}
+      .features{grid-template-columns:1fr}
+      .cta-btn.secondary{margin-left:0;margin-top:.5rem;display:inline-block}
+    }
+  </style>
+</head>
+<body>
+
+<nav class="container">
+  <div class="logo">P31<span>Labs</span></div>
+  <div class="nav-links">
+    <a href="#features">Features</a>
+    <a href="#install">Install</a>
+    <a href="docs/">Docs</a>
+    <a href="https://github.com/p31labs" target="_blank">GitHub</a>
+    <a href="docs/" class="btn">Get Started</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="container">
+    <h1>
+      <span class="teal">Sovereign AI</span><br>
+      for <span class="accent">Neurodivergent Families</span>
+    </h1>
+    <p>
+      A local-first, post-quantum, spoon-aware mesh — the Spatial Oasis connects
+      family members through AI agents, secure identity, and adaptive interfaces
+      that respect cognitive load.
+    </p>
+    <div class="badges">
+      <span class="badge"><strong>Open Source</strong> MIT License</span>
+      <span class="badge"><strong>500+</strong> AI Models</span>
+      <span class="badge"><strong>26</strong> MCP Tools</span>
+      <span class="badge"><strong>K₄</strong> Complete Graph</span>
+      <span class="badge"><strong>ML-DSA-65</strong> Post-Quantum</span>
+    </div>
+  </div>
+</section>
+
+<section id="install">
+  <div class="container">
+    <div class="install-box">
+      <div class="label">Quick Install</div>
+      <div class="cmd">
+        <code>curl -fsSL https://p31ca.org/install | bash</code>
+        <button class="copy-btn" onclick="navigator.clipboard.writeText('curl -fsSL https://p31ca.org/install | bash')">Copy</button>
+      </div>
+      <div class="alt-methods">
+        <strong>npm:</strong> <code>npm install -g @p31/cli</code> &nbsp;&middot;&nbsp;
+        <strong>Homebrew:</strong> <code>brew install p31labs/tap/p31</code> &nbsp;&middot;&nbsp;
+        <strong>AUR:</strong> <code>paru -S p31-bin</code>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="container">
+    <h2 class="section-title">Everything you need. <span class="accent">Nothing you don't.</span></h2>
+    <p class="section-sub">A sovereign stack for family coordination, AI assistance, and secure communication.</p>
+    <div class="features">
+      <div class="feature">
+        <div class="icon">🧠</div>
+        <h3 class="accent">Spoon-Aware AI</h3>
+        <p>The CLI adapts to your cognitive load. Low spoons means simpler prompts, fewer tokens, less noise. High spoons unlocks the full mesh.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔷</div>
+        <h3 class="teal">K₄ Family Mesh</h3>
+        <p>Four vertices, six edges — a complete graph topology for family connectivity. Isostatic rigidity means the geometry holds under stress.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🔐</div>
+        <h3 class="accent">Post-Quantum Identity</h3>
+        <p>ML-DSA-65 (FIPS 204) digital signatures for every family member. Ed25519 keypairs, DID-based passports, SHA-512 chain-of-custody telemetry.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🧩</div>
+        <h3 class="teal">MCP Native</h3>
+        <p>Connect to PHOS Forge, Google Workspace, or any MCP server. 26+ tools for file management, cognitive state, calendar, contacts, and more.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🌐</div>
+        <h3 class="accent">Offline-First</h3>
+        <p>No cloud dependency. Everything runs locally via the p31-router. Your data stays on your machine. Works without internet.</p>
+      </div>
+      <div class="feature">
+        <div class="icon">🚀</div>
+        <h3 class="teal">Beautiful Terminal UI</h3>
+        <p>Bubble Tea TUI with command palette (Ctrl+P), fuzzy search, 28+ commands, color-coded status bar, and real-time mesh updates.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="container">
+    <h2>Ready to build your <span class="accent">Spatial Oasis</span>?</h2>
+    <p>Install the CLI, connect your family, and take control of your sovereign AI infrastructure.</p>
+    <a href="#install" class="cta-btn">Install Now</a>
+    <a href="https://github.com/p31labs" class="cta-btn secondary" target="_blank">View on GitHub</a>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>
+      <a href="https://github.com/p31labs/p31-cli">GitHub</a> &nbsp;&middot;&nbsp;
+      <a href="docs/">Documentation</a> &nbsp;&middot;&nbsp;
+      <a href="https://p31ca.org">p31ca.org</a> &nbsp;&middot;&nbsp;
+      <a href="docs/">API Reference</a> &nbsp;&middot;&nbsp;
+      MIT License
+    </p>
+    <p style="margin-top:.6rem;color:var(--muted);font-size:.8rem">
+      Built with ❤️ for neurodivergent families by P31 Labs &mdash; Ca₉(PO₄)₆
+    </p>
+  </div>
+</footer>
+
+</body>
+</html>

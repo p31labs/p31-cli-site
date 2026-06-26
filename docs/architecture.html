@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture — P31 Documentation</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--bg:#060a12;--surface:#0b1222;--border:#1a2640;--text:#d1d9e8;--muted:#6b7d9e;--neon:#39ff14;--teal:#2dd4bf;--gold:#fbbf24;--radius:8px}
+    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7}
+    .container{max-width:860px;margin:0 auto;padding:0 1.5rem}
+    nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border)}
+    .logo{font-weight:900;font-size:1.4rem;color:var(--neon);letter-spacing:-.5px}
+    .logo span{color:var(--teal)}
+    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;margin-left:1.5rem;transition:color .15s}
+    .nav-links a:hover{color:var(--neon)}
+    h1{font-size:2rem;font-weight:800;margin:2.5rem 0 .3rem;color:var(--neon)}
+    h2{font-size:1.3rem;font-weight:700;margin:2rem 0 .5rem;color:var(--teal)}
+    h3{font-size:1.1rem;font-weight:600;margin:1.5rem 0 .3rem;color:var(--gold)}
+    p,li{color:var(--muted);margin-bottom:.5rem}
+    ul{padding-left:1.5rem;margin-bottom:1rem}
+    li{margin-bottom:.3rem}
+    code{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);padding:.15rem .4rem;border-radius:4px;color:var(--neon)}
+    pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;overflow-x:auto}
+    pre code{background:none;padding:0;font-size:.82rem}
+    a{color:var(--teal);text-decoration:none}
+    a:hover{color:var(--neon)}
+    .diagram{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-align:center;margin:1.5rem 0;font-family:'JetBrains Mono',monospace;font-size:.85rem;line-height:2;color:var(--muted)}
+    .diagram .v{color:var(--neon);font-weight:600}
+    .diagram .e{color:var(--teal)}
+    .diagram .m{color:var(--gold)}
+    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;margin-top:3rem}
+  </style>
+</head>
+<body>
+<nav class="container">
+  <div class="logo">P31<span>Labs</span> <span style="color:var(--muted);font-weight:400;font-size:.9rem">/ docs</span></div>
+  <div class="nav-links"><a href="../">Home</a><a href="index.html">Docs</a><a href="https://github.com/p31labs/p31-cli">GitHub</a></div>
+</nav>
+<div class="container">
+<h1>Architecture</h1>
+<p>The P31 stack is a sovereign, local-first AI infrastructure for neurodivergent families.</p>
+
+<h2>High-Level Overview</h2>
+<div class="diagram">
+<span class="v">┌──────────────┐</span>     <span class="e">┌──────────────┐</span>     <span class="m">┌──────────────┐</span><br>
+<span class="v">│   p31 CLI    │</span>────▶<span class="e">│  p31-router  │</span>────▶<span class="m">│  DeepSeek    │</span><br>
+<span class="v">│   (TUI)      │</span>     <span class="e">│  :4001       │</span>     <span class="m">│  (OpenAI     │</span><br>
+<span class="v">│   MCP agent  │</span>     <span class="e">│  (proxy)     │</span>     <span class="m">│  compatible) │</span><br>
+<span class="v">└──────────────┘</span>     <span class="e">└──────────────┘</span>     <span class="m">└──────────────┘</span><br>
+       │                                        │<br>
+       ▼                                        ▼<br>
+<span class="v">┌──────────────┐</span>                       <span class="v">┌──────────────┐</span><br>
+<span class="v">│ phos-forge   │</span>                       <span class="v">│ google-      │</span><br>
+<span class="v">│ (MCP stdio)  │</span>                       <span class="v">│ workspace    │</span><br>
+<span class="v">│ 26 tools     │</span>                       <span class="v">│ (MCP stdio)  │</span><br>
+<span class="v">└──────────────┘</span>                       <span class="v">└──────────────┘</span>
+</div>
+
+<h2>Components</h2>
+<h3>p31 CLI (Go)</h3>
+<ul>
+  <li>Cobra + Viper for command line and config</li>
+  <li>Bubble Tea + Lipgloss for the TUI</li>
+  <li>MCP client via <code>mark3labs/mcp-go</code></li>
+  <li>OpenAI client via <code>sashabaranov/go-openai</code></li>
+  <li>28+ commands, 60s request timeout, clean MCP shutdown</li>
+</ul>
+
+<h3>p31-router (Python)</h3>
+<ul>
+  <li>Lightweight OpenAI-compatible proxy on port 4001</li>
+  <li>Three tiers: scavenger (Gemini free), flash (DeepSeek Chat), premium (DeepSeek Reasoner)</li>
+  <li>Sequential fallback: premium &rarr; flash &rarr; scavenger &rarr; error</li>
+  <li>Token bucket rate limiting (60 events/min)</li>
+</ul>
+
+<h3>PHOS Forge MCP (Node.js)</h3>
+<ul>
+  <li>26 tools: file classification, cognitive state, deploy, logbook, brain-dump, jitterbug, etc.</li>
+  <li>Line-by-line JSON-RPC over stdio</li>
+  <li>Self-healer, Reflex Arc, Tide, Kappa, Cartographer subsystems</li>
+</ul>
+
+<h3>Google Workspace MCP (Node.js)</h3>
+<ul>
+  <li>Calendar, Gmail, Drive, Docs, Sheets, Contacts</li>
+  <li>OAuth 2.0 with local token storage</li>
+  <li>Multi-account support</li>
+</ul>
+
+<h2>Data Flow</h2>
+<ol>
+  <li>User types a message in <code>p31 chat</code></li>
+  <li>Go CLI sends OpenAI-format request to <code>localhost:4001/v1</code></li>
+  <li>Router proxy forwards to DeepSeek (or falls back)</li>
+  <li>If the AI requests a tool, the CLI executes the tool via MCP stdio</li>
+  <li>Tool results are fed back to the AI for a final answer</li>
+  <li>Response is displayed in the TUI</li>
+</ol>
+
+<h2>Security</h2>
+<ul>
+  <li>ML-DSA-65 (FIPS 204) post-quantum signatures for identity</li>
+  <li>SHA-512 chain-of-custody telemetry</li>
+  <li>No cloud dependency — all data stays on your machine</li>
+  <li>Ed25519 Cognitive Passport</li>
+</ul>
+</div>
+<footer class="container"><p><a href="https://p31-cli.pages.dev">p31-cli.pages.dev</a> &nbsp;&middot;&nbsp; MIT License</p></footer>
+</body>
+</html>
