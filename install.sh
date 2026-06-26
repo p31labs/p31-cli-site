@@ -28,7 +28,7 @@ case "${OS}" in
 esac
 
 # ---- Download ----
-BASE_URL="${BASE_URL:-https://p31-cli.pages.dev}"
+BASE_URL="${BASE_URL:-https://cli.p31ca.org}"
 if [ "${VERSION}" = "latest" ]; then
   URL="${BASE_URL}/downloads/p31_${OS}_${ARCH}.tar.gz"
 else
