@@ -28,16 +28,23 @@ case "${OS}" in
 esac
 
 # ---- Download ----
-BASE_URL="${BASE_URL:-https://cli.p31ca.org}"
+REPO="p31labs/p31-cli"
 if [ "${VERSION}" = "latest" ]; then
-  URL="${BASE_URL}/downloads/p31_${OS}_${ARCH}.tar.gz"
+  GH_URL="https://github.com/${REPO}/releases/latest/download/p31_${OS}_${ARCH}.tar.gz"
 else
-  URL="${BASE_URL}/downloads/p31_${OS}_${ARCH}.tar.gz"
+  GH_URL="https://github.com/${REPO}/releases/download/${VERSION}/p31_${OS}_${ARCH}.tar.gz"
 fi
+FALLBACK_URL="https://cli.p31ca.org/downloads/p31_${OS}_${ARCH}.tar.gz"
 
 echo "⬇️  Downloading p31 (${OS}/${ARCH})..."
 mkdir -p "${INSTALL_DIR}"
-curl -fsSL "${URL}" | tar -xz -C "${INSTALL_DIR}" "${BIN_NAME}"
+
+# Try GitHub releases first, fall back to self-hosted
+URL="${GH_URL}"
+curl -fsSL "${URL}" | tar -xz -C "${INSTALL_DIR}" "${BIN_NAME}" 2>/dev/null || {
+  echo "   GitHub download failed, trying fallback..."
+  curl -fsSL "${FALLBACK_URL}" | tar -xz -C "${INSTALL_DIR}" "${BIN_NAME}"
+}
 chmod +x "${INSTALL_DIR}/${BIN_NAME}"
 
 echo "✅ Installed to ${INSTALL_DIR}/${BIN_NAME}"
