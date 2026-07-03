@@ -1,0 +1,779 @@
+<!DOCTYPE html>
+<html lang="en" data-spoons="5">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>P31 // Uplink — LOVE Token Genesis</title>
+  <meta name="description" content="P31 Spatial Oasis — LOVE Token genesis countdown. Cryptographic clock for neurodivergent families." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
+  
+  <style>
+    /* ─── TOKENS ─── */
+    :root {
+      --bg-void: #030305;
+      --quantum-cyan: #00f0ff;
+      --quantum-violet: #b53cff;
+      --quantum-gold: #ffd700;
+      --quantum-green: #00ff66;
+      --quantum-red: #ff003c;
+      --text-bright: #ffffff;
+      --text-muted: #8b9bb4;
+      --text-dim: #4a5b78;
+      --font-mono: 'JetBrains Mono', monospace;
+      --glow-intensity: 1;
+      --glass-bg: rgba(10, 12, 28, 0.35);
+      --glass-border: rgba(0, 240, 255, 0.15);
+      --particle-opacity: 0.6;
+      --blur-intensity: 16px;
+      --saturation-boost: 1.4;
+    }
+    body[data-spoons="5"] {
+      --glow-intensity: 1;
+      --particle-opacity: 0.6;
+      --blur-intensity: 16px;
+      --saturation-boost: 1.4;
+    }
+    body[data-spoons="3"] {
+      --glow-intensity: 0.4;
+      --particle-opacity: 0.2;
+      --blur-intensity: 12px;
+      --saturation-boost: 1.0;
+    }
+    body[data-spoons="1"] {
+      --glow-intensity: 0;
+      --particle-opacity: 0;
+      --blur-intensity: 4px;
+      --saturation-boost: 0.8;
+      --quantum-cyan: #5cc2c9;
+      --quantum-violet: #9b72cf;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background-color: var(--bg-void);
+      color: var(--text-bright);
+      font-family: var(--font-mono);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: background-color 0.8s ease;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* ─── SPATIAL GRID ─── */
+    .spatial-grid {
+      position: fixed;
+      inset: -50%;
+      z-index: 0;
+      background-image:
+        radial-gradient(circle at 50% 50%, rgba(181, 60, 255, calc(0.12 * var(--glow-intensity))) 0%, transparent 40%),
+        linear-gradient(rgba(0, 240, 255, calc(0.03 * var(--glow-intensity))) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, calc(0.03 * var(--glow-intensity))) 1px, transparent 1px);
+      background-size: 100% 100%, 60px 60px, 60px 60px;
+      background-position: center center;
+      animation: gridShift 30s linear infinite;
+      pointer-events: none;
+      will-change: transform;
+    }
+    @keyframes gridShift {
+      0% { transform: translateY(0) translateZ(0); }
+      100% { transform: translateY(60px) translateZ(0); }
+    }
+
+    /* ─── PARTICLES ─── */
+    #particles {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      opacity: var(--particle-opacity);
+      pointer-events: none;
+      transition: opacity 0.8s ease;
+    }
+
+    /* ─── NEURO-ADAPTIVE CONTROLS ─── */
+    .spoon-controls {
+      position: fixed;
+      top: 24px;
+      right: 24px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      z-index: 100;
+      background: var(--glass-bg);
+      backdrop-filter: blur(12px);
+      padding: 8px 16px 8px 12px;
+      border-radius: 30px;
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+      transition: all 0.8s ease;
+      flex-wrap: nowrap;
+    }
+    .spoon-label {
+      font-size: 10px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-right: 4px;
+      white-space: nowrap;
+    }
+    .spoon-btn {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .spoon-btn:hover, .spoon-btn:focus-visible { background: rgba(255,255,255,0.1); outline: none; }
+    .spoon-btn.active {
+      background: rgba(0, 240, 255, calc(0.2 * var(--glow-intensity) + 0.1));
+      color: var(--text-bright);
+      border-color: var(--quantum-cyan);
+      box-shadow: 0 0 10px rgba(0, 240, 255, calc(0.5 * var(--glow-intensity)));
+    }
+    .spoon-btn.active[data-spoon="1"] { border-color: var(--text-muted); box-shadow: none; }
+    .audio-toggle, .bionic-toggle, .focus-toggle {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+    }
+    .audio-toggle:hover, .bionic-toggle:hover, .focus-toggle:hover {
+      background: rgba(255,255,255,0.1);
+    }
+    .bionic-toggle.active, .focus-toggle.active {
+      background: rgba(0, 240, 255, calc(0.15 * var(--glow-intensity) + 0.1));
+      border-color: var(--quantum-cyan);
+      color: var(--text-bright);
+    }
+    .divider {
+      width: 1px;
+      height: 24px;
+      background: var(--glass-border);
+      margin: 0 4px;
+    }
+
+    /* ─── MAIN CONTENT ─── */
+    .uplink-container {
+      position: relative;
+      z-index: 10;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 80px 24px 40px;
+      min-height: 100vh;
+    }
+
+    /* ─── BRAND STRIP ─── */
+    .brand-strip {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-muted);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .brand-strip .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--quantum-cyan);
+      box-shadow: 0 0 8px var(--quantum-cyan);
+    }
+    .brand-strip a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .brand-strip a:hover {
+      color: var(--quantum-cyan);
+    }
+
+    /* ─── LOCKED TOKEN ─── */
+    .token-container {
+      position: relative;
+      width: 180px;
+      height: 180px;
+      margin-bottom: 40px;
+      filter: drop-shadow(0 0 40px rgba(0, 240, 255, calc(0.3 * var(--glow-intensity))));
+    }
+    .token-glow {
+      position: absolute;
+      inset: -30px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(0, 240, 255, 0.15) 0%, transparent 70%);
+      animation: pulseGlow 3s ease-in-out infinite alternate;
+    }
+    @keyframes pulseGlow {
+      0% { transform: scale(0.9); opacity: 0.5; }
+      100% { transform: scale(1.1); opacity: 1; }
+    }
+    .token-ring {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--glass-border);
+      animation: spinRing 20s linear infinite;
+    }
+    .token-ring::after {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: 50%;
+      border: 1px solid rgba(0, 240, 255, 0.1);
+      animation: spinRing 30s linear infinite reverse;
+    }
+    @keyframes spinRing {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    .token-core {
+      position: absolute;
+      inset: 20px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 40% 35%, rgba(0, 240, 255, 0.1), rgba(181, 60, 255, 0.05));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      border: 1px solid rgba(0, 240, 255, 0.1);
+    }
+    .token-icon {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 8px;
+      opacity: 0.6;
+      filter: grayscale(0.4);
+      transition: all 1s ease;
+    }
+    .token-label {
+      font-size: 10px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      opacity: 0.6;
+    }
+    .token-lock {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      font-size: 18px;
+      opacity: 0.8;
+      color: var(--quantum-cyan);
+    }
+    /* Unlocked state (future) */
+    .token-container.unlocked .token-icon {
+      opacity: 1;
+      filter: grayscale(0);
+    }
+    .token-container.unlocked .token-lock {
+      color: var(--quantum-green);
+    }
+
+    /* ─── COUNTDOWN ─── */
+    .countdown {
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .countdown-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--text-dim);
+      margin-bottom: 16px;
+    }
+    .countdown-timer {
+      display: flex;
+      gap: 24px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .countdown-unit {
+      text-align: center;
+      min-width: 60px;
+    }
+    .countdown-value {
+      font-size: 42px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--quantum-cyan);
+      text-shadow: 0 0 20px rgba(0, 240, 255, calc(0.5 * var(--glow-intensity)));
+      font-variant-numeric: tabular-nums;
+    }
+    .countdown-value.violet {
+      color: var(--quantum-violet);
+      text-shadow: 0 0 20px rgba(181, 60, 255, calc(0.5 * var(--glow-intensity)));
+    }
+    .countdown-label-unit {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--text-dim);
+      margin-top: 6px;
+    }
+
+    /* ─── MESSAGING ─── */
+    .message {
+      max-width: 480px;
+      text-align: center;
+      margin-bottom: 32px;
+    }
+    .message h1 {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--text-bright) 0%, var(--quantum-cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .message p {
+      font-size: 14px;
+      color: var(--text-muted);
+      line-height: 1.7;
+      -webkit-text-fill-color: var(--text-muted);
+    }
+    .message .highlight {
+      color: var(--quantum-cyan);
+      -webkit-text-fill-color: var(--quantum-cyan);
+    }
+
+    /* ─── STATUS INDICATOR ─── */
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 8px;
+    }
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--quantum-green);
+      animation: pulseDot 2s ease-in-out infinite;
+    }
+    .status-dot.waiting {
+      background: var(--quantum-gold);
+      animation: pulseDot 1.5s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+      0%, 100% { opacity: 0.4; transform: scale(1); }
+      50% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* ─── BACK LINK ─── */
+    .back-link {
+      margin-top: 24px;
+      font-size: 12px;
+      color: var(--text-dim);
+      text-decoration: none;
+      transition: color 0.2s;
+      border-bottom: 1px solid transparent;
+    }
+    .back-link:hover {
+      color: var(--quantum-cyan);
+      border-bottom-color: var(--quantum-cyan);
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 768px) {
+      .token-container {
+        width: 140px;
+        height: 140px;
+      }
+      .countdown-value {
+        font-size: 28px;
+      }
+      .countdown-unit {
+        min-width: 44px;
+      }
+      .spoon-controls {
+        top: 16px;
+        right: 16px;
+        padding: 6px 12px;
+        gap: 4px;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+      }
+      .spoon-label { font-size: 8px; }
+      .spoon-btn { width: 24px; height: 24px; font-size: 10px; }
+      .audio-toggle, .bionic-toggle, .focus-toggle { width: 24px; height: 24px; font-size: 10px; }
+      .divider { display: none; }
+    }
+    @media (max-width: 480px) {
+      .countdown-timer { gap: 12px; }
+      .countdown-value { font-size: 22px; }
+      .message h1 { font-size: 18px; }
+      .uplink-container { padding: 60px 16px 32px; }
+    }
+
+    /* ─── REDUCED MOTION ─── */
+    @media (prefers-reduced-motion: reduce) {
+      .spatial-grid { animation: none; }
+      .token-glow { animation: none; }
+      .token-ring { animation: none; }
+      .token-ring::after { animation: none; }
+      .status-dot { animation: none; }
+    }
+
+    /* ─── FOCUS MODE ─── */
+    body.focus-mode .spoon-controls { opacity: 0; pointer-events: none; transition: opacity 0.4s; }
+    body.focus-mode .brand-strip { opacity: 0.3; }
+    body.focus-mode .status { opacity: 0.3; }
+    body.focus-mode .back-link { opacity: 0.3; }
+
+    /* ─── BIONIC READING ─── */
+    body.bionic-reading .message p b {
+      font-weight: 800;
+      color: var(--text-bright);
+      -webkit-text-fill-color: var(--text-bright);
+    }
+    body.bionic-reading .countdown-label { letter-spacing: 1px; }
+  </style>
+</head>
+<body data-spoons="5">
+  <div class="spatial-grid" aria-hidden="true"></div>
+  <canvas id="particles" aria-hidden="true"></canvas>
+
+  <!-- Neuro-Adaptive Controls -->
+  <div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Controls">
+    <span class="spoon-label">Spoons</span>
+    <button class="spoon-btn active" onclick="setSpoons(1)" data-spoon="1" aria-label="Spoon level 1" aria-pressed="false">1</button>
+    <button class="spoon-btn active" onclick="setSpoons(3)" data-spoon="3" aria-label="Spoon level 3" aria-pressed="false">3</button>
+    <button class="spoon-btn active" onclick="setSpoons(5)" data-spoon="5" aria-label="Spoon level 5" aria-pressed="true">5</button>
+    <div class="divider" aria-hidden="true"></div>
+    <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound" title="Toggle sound">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+      </svg>
+    </button>
+    <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" title="Bionic Reading">📖</button>
+    <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" title="Focus Mode">🎯</button>
+  </div>
+
+  <main class="uplink-container">
+    <!-- Brand Strip -->
+    <div class="brand-strip">
+      <span class="dot"></span>
+      P31 // Uplink — <a href="https://cli.p31ca.org">Back to CLI</a>
+    </div>
+
+    <!-- Locked Token -->
+    <div class="token-container" id="tokenContainer">
+      <div class="token-glow"></div>
+      <div class="token-ring"></div>
+      <div class="token-core">
+        <div class="token-icon">❤️</div>
+        <div class="token-label">LOVE Token</div>
+        <div class="token-lock">🔒</div>
+      </div>
+    </div>
+
+    <!-- Countdown -->
+    <div class="countdown">
+      <div class="countdown-label">Genesis Mint</div>
+      <div class="countdown-timer" id="countdownTimer">
+        <div class="countdown-unit">
+          <div class="countdown-value" id="days">00</div>
+          <div class="countdown-label-unit">Days</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-value violet" id="hours">00</div>
+          <div class="countdown-label-unit">Hours</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-value" id="minutes">00</div>
+          <div class="countdown-label-unit">Minutes</div>
+        </div>
+        <div class="countdown-unit">
+          <div class="countdown-value violet" id="seconds">00</div>
+          <div class="countdown-label-unit">Seconds</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message -->
+    <div class="message">
+      <h1>Cryptographic Clock Running</h1>
+      <p>
+        The LOVE token will unlock upon first successful node synchronization.
+        <br />
+        <span class="highlight">24 hours</span> to explore the mesh.
+        <br />
+        No pressure. No tracking. Just a <span class="highlight">privacy-preserving</span> nudge.
+      </p>
+    </div>
+
+    <!-- Status -->
+    <div class="status">
+      <span class="status-dot waiting" id="statusDot"></span>
+      <span id="statusText">Waiting for genesis node...</span>
+    </div>
+
+    <!-- Back Link -->
+    <a href="https://cli.p31ca.org" class="back-link">← Return to CLI</a>
+  </main>
+
+  <script>
+    'use strict';
+
+    // ─── SPOON CONTROLS ──────────────────────────────────────────────────────
+    function setSpoons(level) {
+      document.body.setAttribute('data-spoons', level);
+      document.querySelectorAll('.spoon-btn').forEach(btn => {
+        const val = parseInt(btn.dataset.spoon, 10);
+        btn.classList.toggle('active', val === level);
+        btn.setAttribute('aria-pressed', val === level);
+      });
+      if (navigator.vibrate) navigator.vibrate(10);
+      // Update particle density
+      window.particleDensity = level === 5 ? 1 : level === 3 ? 0.4 : 0;
+    }
+
+    // ─── AUDIO ENGINE ──────────────────────────────────────────────────────
+    const AudioEngine = {
+      ctx: null,
+      osc: null,
+      gain: null,
+      isMuted: localStorage.getItem('p31-sound-muted') === 'true',
+      init() {
+        if (this.ctx) return;
+        try {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (!AudioContext) return;
+          this.ctx = new AudioContext();
+          this.osc = this.ctx.createOscillator();
+          this.gain = this.ctx.createGain();
+          this.osc.type = 'sine';
+          this.gain.gain.value = this.isMuted ? 0 : 0.03;
+          this.osc.frequency.value = 40;
+          this.osc.connect(this.gain);
+          this.gain.connect(this.ctx.destination);
+          this.osc.start();
+          this.updateFrequency();
+          this.updateIcon();
+        } catch (e) { console.warn('Web Audio unavailable'); }
+      },
+      updateFrequency() {
+        if (!this.osc || this.isMuted) return;
+        const spoons = parseInt(document.body.getAttribute('data-spoons') || '5', 10);
+        this.osc.frequency.setTargetAtTime(30 + (spoons - 1) * 5, this.ctx.currentTime, 0.5);
+      },
+      toggleMute() {
+        if (!this.ctx) this.init();
+        this.isMuted = !this.isMuted;
+        localStorage.setItem('p31-sound-muted', String(this.isMuted));
+        if (this.gain) {
+          this.gain.gain.setTargetAtTime(this.isMuted ? 0 : 0.03, this.ctx.currentTime, 0.5);
+        }
+        this.updateIcon();
+      },
+      updateIcon() {
+        const icon = document.getElementById('audio-icon');
+        if (!icon) return;
+        icon.innerHTML = this.isMuted
+          ? '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>'
+          : '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>';
+      }
+    };
+
+    // ─── TOGGLES ──────────────────────────────────────────────────────────
+    function toggleBionicReading() {
+      const el = document.getElementById('bionic-toggle');
+      document.body.classList.toggle('bionic-reading');
+      el.classList.toggle('active');
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    function toggleFocusMode() {
+      const el = document.getElementById('focus-toggle');
+      document.body.classList.toggle('focus-mode');
+      el.classList.toggle('active');
+      if (navigator.vibrate) navigator.vibrate(10);
+    }
+
+    // ─── COUNTDOWN TIMER ──────────────────────────────────────────────────
+    // Sets the target time to exactly 24 hours from when the page loads
+    const TARGET_TIME = Date.now() + (24 * 60 * 60 * 1000); 
+
+    let timerInterval = null;
+
+    function updateCountdown() {
+      const now = Date.now();
+      let diff = TARGET_TIME - now;
+
+      if (diff <= 0) {
+        clearInterval(timerInterval);
+        document.getElementById('days').textContent = '00';
+        document.getElementById('hours').textContent = '00';
+        document.getElementById('minutes').textContent = '00';
+        document.getElementById('seconds').textContent = '00';
+        document.getElementById('statusText').textContent = '✨ LOVE Token Unlocked!';
+        document.getElementById('statusDot').className = 'status-dot';
+        document.getElementById('tokenContainer').classList.add('unlocked');
+        return;
+      }
+
+      const days = Math.floor(diff / 86400000);
+      diff -= days * 86400000;
+      const hours = Math.floor(diff / 3600000);
+      diff -= hours * 3600000;
+      const minutes = Math.floor(diff / 60000);
+      diff -= minutes * 60000;
+      const seconds = Math.floor(diff / 1000);
+
+      document.getElementById('days').textContent = String(days).padStart(2, '0');
+      document.getElementById('hours').textContent = String(hours).padStart(2, '0');
+      document.getElementById('minutes').textContent = String(minutes).padStart(2, '0');
+      document.getElementById('seconds').textContent = String(seconds).padStart(2, '0');
+    }
+
+    // ─── PARTICLES ──────────────────────────────────────────────────────
+    const canvas = document.getElementById('particles');
+    const ctx = canvas.getContext('2d', { alpha: true });
+    let particles = [];
+    let mouse = { x: -1000, y: -1000, radiusSq: 22500 };
+    window.particleDensity = 1;
+    let animationId = null;
+
+    const resizeObserver = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        canvas.width = entry.contentRect.width;
+        canvas.height = entry.contentRect.height;
+        initParticles();
+      }
+    });
+    resizeObserver.observe(document.body);
+
+    window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
+    window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; }, { passive: true });
+
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 20) + 1;
+        const colors = ['#00f0ff', '#b53cff', '#ffd700', '#00ff66'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.shadowBlur = 8;
+        ctx.shadowColor = this.color;
+        ctx.fill();
+      }
+      update() {
+        let dx = mouse.x - this.x;
+        let dy = mouse.y - this.y;
+        let distSq = dx * dx + dy * dy;
+        if (distSq < mouse.radiusSq) {
+          let distance = Math.sqrt(distSq);
+          let force = (150 - distance) / 150;
+          this.x -= (dx / distance) * force * this.density * 0.6;
+          this.y -= (dy / distance) * force * this.density * 0.6;
+        } else {
+          this.x += (this.baseX - this.x) / 20;
+          this.y += (this.baseY - this.y) / 20;
+        }
+        this.baseY -= 0.08;
+        if (this.baseY < -10) {
+          this.baseY = canvas.height + 10;
+          this.baseX = Math.random() * canvas.width;
+          this.x = this.baseX;
+        }
+        this.draw();
+      }
+    }
+
+    function initParticles() {
+      const hwFactor = (navigator.hardwareConcurrency || 4) > 4 ? 1 : 0.6;
+      const targetCount = Math.floor((canvas.width * canvas.height) / 12000 * hwFactor);
+      const maxParticles = Math.min(targetCount, 180);
+      particles = [];
+      for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
+    }
+
+    function animate() {
+      animationId = requestAnimationFrame(animate);
+      const spoonLevel = parseInt(document.body.getAttribute('data-spoons'), 10);
+      if (spoonLevel === 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const activeCount = Math.floor(particles.length * window.particleDensity);
+      for (let i = 0; i < activeCount; i++) particles[i].update();
+    }
+
+    // ─── INIT ──────────────────────────────────────────────────────────────
+    function init() {
+      // Spoon controls
+      setSpoons(5);
+
+      // Audio toggle
+      document.getElementById('audio-toggle').addEventListener('click', () => {
+        AudioEngine.toggleMute();
+        if (navigator.vibrate) navigator.vibrate(10);
+      });
+
+      // Bionic toggle
+      document.getElementById('bionic-toggle').addEventListener('click', toggleBionicReading);
+
+      // Focus toggle
+      document.getElementById('focus-toggle').addEventListener('click', toggleFocusMode);
+
+      // Countdown
+      updateCountdown();
+      timerInterval = setInterval(updateCountdown, 1000);
+
+      // Particles
+      initParticles();
+      animate();
+
+      // Keyboard shortcuts
+      document.addEventListener('keydown', (e) => {
+        if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+        if (e.key === '1') setSpoons(1);
+        else if (e.key === '3') setSpoons(3);
+        else if (e.key === '5') setSpoons(5);
+        else if (e.key.toLowerCase() === 'm') AudioEngine.toggleMute();
+        else if (e.key.toLowerCase() === 'b') toggleBionicReading();
+        else if (e.key.toLowerCase() === 'f') toggleFocusMode();
+      });
+
+      console.log('%c🧠 P31 Uplink — LOVE Token Genesis', 'color: #00f0ff; font-weight: bold; font-size: 14px;');
+      console.log('Countdown target:', new Date(TARGET_TIME).toISOString());
+    }
+
+    // ─── START ──────────────────────────────────────────────────────────────
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
