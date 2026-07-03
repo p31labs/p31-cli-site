@@ -705,30 +705,6 @@
     body.focus-mode .spoon-controls { opacity: 0; pointer-events: none; }
     body.focus-mode .workspace .metadata-pane { display: none; }
     body.focus-mode .workspace .stream-header { display: none; }
-    .focus-toggle {
-      position: fixed; bottom: 24px; right: 24px; z-index: 200;
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      color: var(--text-muted); padding: 8px 16px; border-radius: 20px;
-      cursor: pointer; font-family: var(--font-mono); font-size: 11px;
-      backdrop-filter: blur(12px); transition: all 0.8s ease;
-    }
-    .focus-toggle:hover { color: var(--quantum-cyan); border-color: rgba(0,240,255,0.4); }
-    .focus-toggle.active { color: var(--quantum-cyan); border-color: var(--quantum-cyan); }
-
-    /* ─── FORTUNE 1: Bionic Reading ─── */
-    .bionic-reading .hero-sub,
-    .bionic-reading .feature-desc { font-weight: 400; }
-    .bionic-reading .hero-sub b,
-    .bionic-reading .feature-desc b { font-weight: 800; color: var(--quantum-cyan); }
-    .bionic-toggle {
-      position: fixed; bottom: 24px; right: 140px; z-index: 200;
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      color: var(--text-muted); padding: 8px 16px; border-radius: 20px;
-      cursor: pointer; font-family: var(--font-mono); font-size: 11px;
-      backdrop-filter: blur(12px); transition: all 0.8s ease;
-    }
-    .bionic-toggle:hover { color: var(--quantum-violet); border-color: rgba(181,60,255,0.4); }
-    .bionic-toggle.active { color: var(--quantum-violet); border-color: var(--quantum-violet); }
 
     /* ─── FORTUNE 1: Screen Reader Utilities ─── */
     .sr-only {
