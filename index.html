@@ -766,17 +766,20 @@
 <canvas id="particles" aria-hidden="true"></canvas>
 
 <!-- Neuro-Adaptive Controls -->
-  <div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Spoon Controls">
+  <div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Controls">
     <span class="spoon-label">Spoons</span>
-    <button class="spoon-btn" onclick="setSpoons(1)" data-spoon="1" aria-label="Set spoon level to 1 (low energy, static)">1</button>
-    <button class="spoon-btn" onclick="setSpoons(3)" data-spoon="3" aria-label="Set spoon level to 3 (medium energy)">3</button>
-    <button class="spoon-btn active" onclick="setSpoons(5)" data-spoon="5" aria-label="Set spoon level to 5 (high energy, full holographic)">5</button>
+    <button class="spoon-btn active" onclick="setSpoons(1)" data-spoon="1" aria-label="Spoon level 1" aria-pressed="false">1</button>
+    <button class="spoon-btn active" onclick="setSpoons(3)" data-spoon="3" aria-label="Spoon level 3" aria-pressed="false">3</button>
+    <button class="spoon-btn active" onclick="setSpoons(5)" data-spoon="5" aria-label="Spoon level 5" aria-pressed="true">5</button>
     <div class="divider" aria-hidden="true"></div>
-    <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+    <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound" title="Toggle sound">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+      </svg>
     </button>
-    <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" onclick="toggleBionicReading()">📖</button>
-    <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" onclick="toggleFocusMode()">🎯 Focus</button>
+    <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" title="Bionic Reading">📖</button>
+    <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" title="Focus Mode">🎯</button>
   </div>
 
 <!-- Screen Reader Live Region -->
