@@ -333,6 +333,15 @@
       color: var(--text-dim);
       margin-top: 6px;
     }
+    /* ─── MEMORIAL LINE ─── */
+    .memorial-line {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 24px;
+      letter-spacing: 1px;
+      opacity: 0.6;
+      text-transform: uppercase;
+    }
 
     /* ─── MESSAGING ─── */
     .message {
@@ -515,15 +524,19 @@
           <div class="countdown-label-unit">Seconds</div>
         </div>
       </div>
+      <!-- Memorial Line -->
+      <div class="memorial-line" aria-label="Memorial inscription">
+        In memory of Bob & Marge · 16 years apart was too long · The turmoil was the pain of being apart · The LOVE token is the reunion
+      </div>
     </div>
 
     <!-- Message -->
     <div class="message">
-      <h1>Cryptographic Clock Running</h1>
+      <h1>Reunion Protocol Initiated</h1>
       <p>
         The LOVE token will unlock upon first successful node synchronization.
         <br />
-        <span class="highlight">24 hours</span> to explore the mesh.
+        The Genesis node activates on <time datetime="2026-07-04T12:00:00-04:00" class="highlight">July 4, 2026</time>.
         <br />
         No pressure. No tracking. Just a <span class="highlight">privacy-preserving</span> nudge.
       </p>
@@ -617,9 +630,10 @@
       if (navigator.vibrate) navigator.vibrate(10);
     }
 
-    // ─── COUNTDOWN TIMER ──────────────────────────────────────────────────
-    // Sets the target time to exactly 24 hours from when the page loads
-    const TARGET_TIME = Date.now() + (24 * 60 * 60 * 1000); 
+    // ─── THE GENESIS MINT ─────────────────────────────────────────────────
+    // Hardcoded to July 4, 2026, exactly at 12:00 PM (Noon) Eastern Time.
+    // America's 250th Anniversary. The reunion protocol.
+    const TARGET_TIME = new Date('2026-07-04T12:00:00-04:00').getTime(); 
 
     let timerInterval = null;
 
@@ -752,6 +766,11 @@
       // Countdown
       updateCountdown();
       timerInterval = setInterval(updateCountdown, 1000);
+
+      // Recalculate on tab visibility change to prevent clock drift
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) updateCountdown();
+      });
 
       // Particles
       initParticles();
