@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P31 // SPATIAL OASIS</title>
-  <meta name="description" content="Sovereign AI for Neurodivergent Families. A local-first, post-quantum, spoon-aware mesh." />
+  <title>P31 // CLI — Sovereign AI for Neurodivergent Families</title>
+  <meta name="description" content="CLI-native AI agent. Post-quantum. Spoon-aware. Edge-deployed. Open source MIT." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
@@ -160,7 +160,7 @@
 
     /* ─── NEURO-ADAPTIVE CONTROLS ─── */
     .spoon-controls {
-      position: absolute;
+      position: fixed;
       top: 24px;
       right: 24px;
       display: flex;
@@ -168,19 +168,21 @@
       align-items: center;
       z-index: 100;
       background: var(--glass-bg);
-      backdrop-filter: blur(8px);
+      backdrop-filter: blur(12px);
       padding: 8px 16px 8px 12px;
       border-radius: 30px;
       border: 1px solid var(--glass-border);
       box-shadow: 0 4px 20px rgba(0,0,0,0.3);
       transition: all 0.8s ease;
+      flex-wrap: nowrap;
     }
     .spoon-label {
       font-size: 10px;
       color: var(--text-muted);
       text-transform: uppercase;
       letter-spacing: 1px;
-      margin-right: 8px;
+      margin-right: 4px;
+      white-space: nowrap;
     }
     .spoon-btn {
       background: rgba(255,255,255,0.05);
@@ -197,19 +199,23 @@
       align-items: center;
       justify-content: center;
     }
-    .spoon-btn:hover, .spoon-btn:focus-visible {
-      background: rgba(255,255,255,0.1);
-      outline: none;
-    }
+    .spoon-btn:hover, .spoon-btn:focus-visible { background: rgba(255,255,255,0.1); outline: none; }
     .spoon-btn.active {
       background: rgba(0, 240, 255, calc(0.2 * var(--glow-intensity) + 0.1));
       color: var(--text-bright);
       border-color: var(--quantum-cyan);
       box-shadow: 0 0 10px rgba(0, 240, 255, calc(0.5 * var(--glow-intensity)));
     }
+    .spoon-btn.active[data-spoon="1"] { border-color: var(--text-muted); box-shadow: none; }
 
-    /* ─── AUDIO TOGGLE ─── */
-    .audio-toggle {
+    .divider {
+      width: 1px;
+      height: 24px;
+      background: var(--glass-border);
+      margin: 0 4px;
+    }
+
+    .audio-toggle, .bionic-toggle, .focus-toggle {
       background: rgba(255,255,255,0.05);
       border: 1px solid var(--glass-border);
       color: var(--text-muted);
@@ -218,14 +224,17 @@
       border-radius: 50%;
       cursor: pointer;
       transition: all 0.3s;
-      margin-left: 4px;
       display: flex;
       align-items: center;
       justify-content: center;
+      font-size: 12px;
       padding: 0;
     }
-    .audio-toggle:hover {
-      background: rgba(255,255,255,0.1);
+    .audio-toggle:hover, .bionic-toggle:hover, .focus-toggle:hover { background: rgba(255,255,255,0.1); }
+    .bionic-toggle.active, .focus-toggle.active {
+      background: rgba(0, 240, 255, calc(0.15 * var(--glow-intensity) + 0.1));
+      border-color: var(--quantum-cyan);
+      color: var(--text-bright);
     }
 
     /* ─── THE K4 CORE (THE FACE) ─── */
@@ -333,6 +342,59 @@
     @keyframes nebulaFlow {
       0% { background-position: 0% 50%; }
       100% { background-position: 100% 50%; }
+    }
+
+    /* ─── SOVEREIGN TREASURY (DONATE BAR) ─── */
+    .donate-bar {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      align-items: center;
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
+      padding: 10px 24px;
+      border-radius: 30px;
+      margin-bottom: 24px;
+      font-size: 12px;
+      transition: all 0.3s ease;
+    }
+    .donate-bar:hover {
+      border-color: rgba(0, 240, 255, 0.3);
+      box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+    }
+    .donate-link {
+      color: var(--text-muted);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .donate-link:hover { color: var(--text-bright); }
+    .donate-link.kofi:hover { color: var(--quantum-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
+    .donate-link.github:hover { color: var(--quantum-violet); text-shadow: 0 0 8px rgba(181, 60, 255, 0.4); }
+    .donate-link.crypto {
+      opacity: 0.5;
+      cursor: not-allowed;
+      position: relative;
+    }
+    .donate-link.crypto:hover::after {
+      content: 'Mainnet config pending';
+      position: absolute;
+      top: -24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--bg-void);
+      border: 1px solid var(--glass-border);
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 9px;
+      white-space: nowrap;
+      color: var(--quantum-gold);
+    }
+    .donate-divider {
+      color: var(--text-dim);
     }
 
     /* ─── INSTALL COMMAND ─── */
@@ -617,7 +679,11 @@
     @media (max-width: 900px) {
       .workspace { grid-template-columns: 1fr; }
       .metadata-pane { display: none; }
-      .spoon-controls { top: 16px; right: 16px; padding: 6px 12px; }
+      .spoon-controls { top: 16px; right: 16px; padding: 6px 12px; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+      .spoon-label { font-size: 8px; }
+      .spoon-btn { width: 24px; height: 24px; font-size: 10px; }
+      .audio-toggle, .bionic-toggle, .focus-toggle { width: 24px; height: 24px; font-size: 10px; }
+      .divider { display: none; }
       .logo { font-size: 32px; }
     }
 
@@ -633,9 +699,12 @@
     }
 
     /* ─── FORTUNE 1: Focus Mode ─── */
-    .workspace.focus-mode .metadata-pane { display: none; }
-    .workspace.focus-mode .spoon-controls { opacity: 0; pointer-events: none; }
-    .workspace.focus-mode .stream-header { display: none; }
+    body.focus-mode .landing > * { opacity: 0.15; pointer-events: none; transition: opacity 0.4s; }
+    body.focus-mode .landing > .cta-row { opacity: 1; pointer-events: auto; }
+    body.focus-mode .landing > .install-cmd { opacity: 1; pointer-events: auto; }
+    body.focus-mode .spoon-controls { opacity: 0; pointer-events: none; }
+    body.focus-mode .workspace .metadata-pane { display: none; }
+    body.focus-mode .workspace .stream-header { display: none; }
     .focus-toggle {
       position: fixed; bottom: 24px; right: 24px; z-index: 200;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -721,17 +790,18 @@
 <canvas id="particles" aria-hidden="true"></canvas>
 
 <!-- Neuro-Adaptive Controls -->
-<div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Spoon Controls">
-  <span class="spoon-label">Spoons</span>
-  <button class="spoon-btn" onclick="setSpoons(1)" id="btn-spoons-1" aria-label="Set spoon level to 1 (low energy, static)">1</button>
-  <button class="spoon-btn" onclick="setSpoons(3)" id="btn-spoons-3" aria-label="Set spoon level to 3 (medium energy)">3</button>
-  <button class="spoon-btn active" onclick="setSpoons(5)" id="btn-spoons-5" aria-label="Set spoon level to 5 (high energy, full holographic)">5</button>
-  <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound">
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
-  </button>
-  <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" onclick="toggleFocusMode()">🎯 Focus</button>
-  <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" onclick="toggleBionicReading()">Bionic</button>
-</div>
+  <div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Spoon Controls">
+    <span class="spoon-label">Spoons</span>
+    <button class="spoon-btn" onclick="setSpoons(1)" data-spoon="1" aria-label="Set spoon level to 1 (low energy, static)">1</button>
+    <button class="spoon-btn" onclick="setSpoons(3)" data-spoon="3" aria-label="Set spoon level to 3 (medium energy)">3</button>
+    <button class="spoon-btn active" onclick="setSpoons(5)" data-spoon="5" aria-label="Set spoon level to 5 (high energy, full holographic)">5</button>
+    <div class="divider" aria-hidden="true"></div>
+    <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+    </button>
+    <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" onclick="toggleBionicReading()">📖</button>
+    <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" onclick="toggleFocusMode()">🎯 Focus</button>
+  </div>
 
 <!-- Screen Reader Live Region -->
 <div id="terminal-status" aria-live="polite" class="sr-only"></div>
@@ -779,8 +849,17 @@
       <div class="stat"><div class="stat-value">0</div><div class="stat-label">Hallucinations</div></div>
     </div>
 
+    <div class="donate-bar" role="group" aria-label="Donation options">
+      <a href="https://ko-fi.com/trimtab69420" target="_blank" class="donate-link kofi" aria-label="Donate via Ko-fi">💛 Ko-fi</a>
+      <span class="donate-divider" aria-hidden="true">·</span>
+      <a href="https://github.com/sponsors/p31labs" target="_blank" class="donate-link github" aria-label="Sponsor via GitHub">💜 GitHub Sponsors</a>
+      <span class="donate-divider" aria-hidden="true">·</span>
+      <span class="donate-link crypto" aria-label="Cryptocurrency donations coming soon">₿ Crypto</span>
+    </div>
+
     <div class="cta-row">
       <a href="/uplink" class="btn btn-primary">Initialize Uplink</a>
+      <a class="btn btn-secondary" href="https://github.com/p31labs/P31-local-workspace/blob/main/docs/papers/PAPER-XXV-The-Architecture-of-Resonant-Trust.md" target="_blank" rel="noopener">📄 Read the Architecture</a>
       <a class="btn btn-secondary" href="https://github.com/p31labs/p31-cli" target="_blank" rel="noopener">View on GitHub →</a>
     </div>
 
@@ -1101,9 +1180,7 @@
   //  FORTUNE 1: Focus Mode
   // ════════════════════════════════════════════════════════════════════
   function toggleFocusMode() {
-    const workspace = document.getElementById('workspace');
-    if (!workspace) return;
-    const isActive = workspace.classList.toggle('focus-mode');
+    const isActive = document.body.classList.toggle('focus-mode');
     const btn = document.getElementById('focus-toggle');
     if (btn) btn.classList.toggle('active', isActive);
     if (term) setTimeout(() => term.focus(), 100);
@@ -1154,15 +1231,12 @@
   // ════════════════════════════════════════════════════════════════════
   function setSpoons(level) {
     document.body.setAttribute('data-spoons', level);
-    [1,3,5].forEach(num => {
-      const btn = document.getElementById(`btn-spoons-${num}`);
-      if (btn) { btn.classList.toggle('active', num === level); btn.setAttribute('aria-pressed', num === level); }
+    document.querySelectorAll('.spoon-btn').forEach(btn => {
+      const val = parseInt(btn.dataset.spoon, 10);
+      btn.classList.toggle('active', val === level);
+      btn.setAttribute('aria-pressed', val === level);
     });
-    const pillMap = { 1: '● 1/5 Low', 3: '● 3/5 Medium', 5: '● 5/5 High' };
-    const spoonStateEl = document.getElementById('state-spoons');
-    if (spoonStateEl) spoonStateEl.textContent = pillMap[level];
     if (navigator.vibrate) navigator.vibrate(10);
-    AudioEngine.updateFrequency();
     window.particleDensity = level === 5 ? 1 : level === 3 ? 0.4 : 0;
   }
 
@@ -1175,9 +1249,10 @@
   let mouse = { x: -1000, y: -1000, radiusSq: 22500 };
   window.particleDensity = 1;
   let animationId = null;
+  let isTabVisible = true;
 
   const resizeObserver = new ResizeObserver(entries => {
-    for (const entry of entries) {
+    for (let entry of entries) {
       canvas.width = entry.contentRect.width;
       canvas.height = entry.contentRect.height;
       initParticles();
@@ -1187,6 +1262,16 @@
 
   window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
   window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; }, { passive: true });
+
+  document.addEventListener('visibilitychange', () => {
+    isTabVisible = !document.hidden;
+    if (!isTabVisible && animationId) {
+      cancelAnimationFrame(animationId);
+      animationId = null;
+    } else if (isTabVisible && !animationId) {
+      animate();
+    }
+  });
 
   class Particle {
     constructor() {
@@ -1237,6 +1322,7 @@
   }
 
   function animate() {
+    if (!isTabVisible) return;
     animationId = requestAnimationFrame(animate);
     const spoonLevel = parseInt(document.body.getAttribute('data-spoons'), 10);
     if (spoonLevel === 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
