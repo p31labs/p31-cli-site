@@ -12,6 +12,7 @@
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/xterm-addon-web-links@0.9.0/lib/xterm-addon-web-links.min.js"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.min.js"></script>
   <style>
     :root {
       --bg-void: #030305;
@@ -132,6 +133,48 @@
     @media (max-width: 480px) { .glassbox-grid { grid-template-columns: 1fr; } .header-controls .spoon-group { display: none; } }
     body.bionic-reading p, body.bionic-reading span, body.bionic-reading div { font-weight: 400; }
     body.bionic-reading p b, body.bionic-reading span b, body.bionic-reading div b { font-weight: 700; color: var(--quantum-cyan); }
+    .modal-overlay { position: fixed; inset: 0; background: rgba(3,3,5,0.85); backdrop-filter: blur(8px); z-index: 100; display: none; align-items: center; justify-content: center; padding: 24px; }
+    .modal-overlay.active { display: flex; }
+    .modal { background: var(--bg-panel); border: 1px solid var(--border-glow); border-radius: var(--radius-lg); max-width: 640px; width: 100%; max-height: 90vh; overflow-y: auto; padding: 32px; box-shadow: 0 0 60px rgba(0,240,255,0.08); }
+    .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .modal-header h2 { font-size: 22px; color: var(--text-bright); }
+    .modal-close { background: transparent; border: 1px solid var(--border-subtle); color: var(--text-muted); width: 32px; height: 32px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .modal-close:hover { color: var(--text-main); border-color: var(--text-dim); }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 12px; font-weight: 600; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group input, .form-group select { width: 100%; padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); color: var(--text-main); font-family: var(--font-sans); font-size: 14px; outline: none; transition: border-color 0.2s; }
+    .form-group input:focus, .form-group select:focus { border-color: var(--quantum-cyan); }
+    .form-group select[multiple] { height: auto; min-height: 80px; }
+    .form-group select[multiple] option { padding: 6px; }
+    .form-group select[multiple] option:checked { background: rgba(0,240,255,0.15); }
+    .wallet-bar { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); margin-bottom: 24px; }
+    .wallet-bar .addr { font-family: var(--font-mono); font-size: 12px; color: var(--quantum-green); }
+    .wallet-bar .status-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); flex-shrink: 0; }
+    .wallet-bar .status-dot.connected { background: var(--quantum-green); box-shadow: 0 0 8px rgba(0,255,102,0.4); }
+    .btn { padding: 12px 24px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: all 0.2s; font-family: var(--font-sans); font-size: 14px; border: none; }
+    .btn-primary { background: var(--quantum-violet); color: var(--text-bright); }
+    .btn-primary:hover { background: #c05cff; box-shadow: 0 0 20px rgba(181,60,255,0.4); }
+    .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+    .btn-secondary { background: var(--bg-surface); color: var(--text-main); border: 1px solid var(--border-subtle); }
+    .btn-secondary:hover { border-color: var(--text-dim); }
+    .btn-ghost { background: transparent; color: var(--text-muted); border: 1px solid var(--border-subtle); font-size: 12px; padding: 8px 16px; }
+    .btn-ghost:hover { color: var(--text-main); border-color: var(--text-dim); }
+    .btn-ghost.active { color: var(--quantum-gold); border-color: rgba(255,215,0,0.3); background: rgba(255,215,0,0.05); }
+    .zk-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 20px; font-size: 10px; font-family: var(--font-mono); background: rgba(0,240,255,0.08); color: var(--quantum-cyan); border: 1px solid rgba(0,240,255,0.2); }
+    .zk-badge.encrypted { background: rgba(255,215,0,0.08); color: var(--quantum-gold); border-color: rgba(255,215,0,0.2); }
+    .success-msg { padding: 20px; background: rgba(0,255,102,0.05); border: 1px solid rgba(0,255,102,0.2); border-radius: var(--radius-md); text-align: center; }
+    .success-msg .token-id { font-family: var(--font-mono); font-size: 24px; color: var(--quantum-cyan); margin: 8px 0; }
+    .success-msg .tx-link { font-size: 12px; color: var(--text-muted); word-break: break-all; }
+    .passport-preview { display: none; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 20px; margin-top: 16px; }
+    .passport-preview.active { display: block; }
+    .passport-preview .field { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); font-size: 13px; }
+    .passport-preview .field:last-child { border-bottom: none; }
+    .passport-preview .field-label { color: var(--text-dim); }
+    .passport-preview .field-value { color: var(--text-main); font-family: var(--font-mono); font-size: 12px; max-width: 60%; text-align: right; word-break: break-word; }
+    .privacy-toggle { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--text-muted); cursor: pointer; padding: 8px 12px; border-radius: var(--radius-sm); background: var(--bg-surface); border: 1px solid var(--border-subtle); }
+    .privacy-toggle:hover { border-color: var(--text-dim); }
+    .privacy-toggle .lock-icon { font-size: 14px; }
   </style>
 </head>
 <body data-spoons="5">
@@ -161,11 +204,11 @@
         </button>
       </nav>
       <div class="sidebar-footer">
-        <div class="user-profile">
-          <div class="avatar">U1</div>
+        <div class="user-profile" id="user-profile">
+          <div class="avatar" id="user-avatar">✦</div>
           <div class="user-info">
-            <span class="user-name">Local Operator</span>
-            <span class="user-status">● Offline First</span>
+            <span class="user-name" id="user-name">Local Operator</span>
+            <span class="user-status" id="user-status">● Offline First</span>
           </div>
         </div>
       </div>
@@ -194,8 +237,8 @@
               <div class="terminal-body" id="xterm-container"></div>
             </div>
             <div class="card" style="display:flex;flex-direction:column;">
-              <div class="card-header">Network Topology</div>
-              <svg class="k4-mini" viewBox="0 0 100 100">
+              <div class="card-header">Network Topology <span style="font-size:10px;color:var(--text-dim);font-weight:400;" id="k4-last-update"></span></div>
+              <svg class="k4-mini" viewBox="0 0 100 100" id="k4-svg">
                 <g stroke="rgba(0,240,255,0.2)" stroke-width="1.5">
                   <line x1="50" y1="10" x2="90" y2="80" />
                   <line x1="90" y1="80" x2="10" y2="80" />
@@ -204,15 +247,15 @@
                   <line x1="90" y1="80" x2="50" y2="55" />
                   <line x1="10" y1="80" x2="50" y2="55" />
                 </g>
-                <circle cx="50" cy="10" r="3" fill="#00f0ff" />
-                <circle cx="90" cy="80" r="3" fill="#00f0ff" />
-                <circle cx="10" cy="80" r="3" fill="#00f0ff" />
-                <circle cx="50" cy="55" r="4" fill="#b53cff" filter="drop-shadow(0 0 8px #b53cff)" />
+                <circle cx="50" cy="10" r="3" id="k4-v0" fill="#00f0ff" />
+                <circle cx="90" cy="80" r="3" id="k4-v1" fill="#00f0ff" />
+                <circle cx="10" cy="80" r="3" id="k4-v2" fill="#00f0ff" />
+                <circle cx="50" cy="55" r="4" id="k4-v3" fill="#b53cff" filter="drop-shadow(0 0 8px #b53cff)" />
               </svg>
-              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-family:var(--font-mono);">
-                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 0 (Core)</span><span style="color:var(--quantum-green);">● SYNCED</span></div>
-                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 1 (Agent)</span><span style="color:var(--quantum-green);">● SYNCED</span></div>
-                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 2 (Mobile)</span><span style="color:var(--text-dim);">○ OFFLINE</span></div>
+              <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-family:var(--font-mono);" id="k4-nodes">
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 0 (Core)</span><span style="color:var(--text-dim);">○ LOADING</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 1 (Agent)</span><span style="color:var(--text-dim);">○ LOADING</span></div>
+                <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 2 (Mobile)</span><span style="color:var(--text-dim);">○ LOADING</span></div>
               </div>
             </div>
           </div>
@@ -241,17 +284,15 @@
             <p style="color:var(--text-muted);font-size:14px;">Radical transparency into the P31 ecosystem state.</p>
           </div>
           <div class="glassbox-grid">
-            <div class="card"><div class="card-header">Data Harvested</div><div class="metric-value cyan">0.0B</div><p style="font-size:12px;color:var(--text-muted);">Zero telemetry. Fully sovereign.</p></div>
-            <div class="card"><div class="card-header">Active Tools</div><div class="metric-value violet">26</div><p style="font-size:12px;color:var(--text-muted);">MCP local integrations loaded.</p></div>
-            <div class="card"><div class="card-header">Test Coverage</div><div class="metric-value gold">413</div><p style="font-size:12px;color:var(--text-muted);">Passing cryptographic tests.</p></div>
-            <div class="card"><div class="card-header">Hallucinations</div><div class="metric-value green">0</div><p style="font-size:12px;color:var(--text-muted);">In critical routing paths (30d).</p></div>
+            <div class="card"><div class="card-header">Fleet Status</div><div class="metric-value cyan" id="gb-fleet">—</div><p style="font-size:12px;color:var(--text-muted);" id="gb-fleet-desc">Polling command center...</p></div>
+            <div class="card"><div class="card-header">Mesh Health</div><div class="metric-value violet" id="gb-mesh">—</div><p style="font-size:12px;color:var(--text-muted);" id="gb-mesh-desc">K4 topology status</p></div>
+            <div class="card"><div class="card-header">Test Coverage</div><div class="metric-value gold" id="gb-tests">—</div><p style="font-size:12px;color:var(--text-muted);" id="gb-tests-desc">Passing cryptographic tests</p></div>
+            <div class="card"><div class="card-header">Genesis Raised</div><div class="metric-value green" id="gb-genesis">—</div><p style="font-size:12px;color:var(--text-muted);" id="gb-genesis-desc">Base ETH toward ignition</p></div>
           </div>
           <div class="card" style="margin-top:24px;">
-            <div class="card-header">System Event Log <span class="badge cyan">LIVE</span></div>
-            <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px;">
-              <div><span style="color:var(--text-dim);">14:02:11</span> <span style="color:var(--quantum-cyan);">[AUTH]</span> Local operator authenticated via did:key.</div>
-              <div><span style="color:var(--text-dim);">14:01:45</span> <span style="color:var(--quantum-violet);">[MESH]</span> K4 topology synchronized with 2 peer nodes.</div>
-              <div><span style="color:var(--text-dim);">13:58:20</span> <span style="color:var(--quantum-gold);">[TOOL]</span> File-system MCP tool executed successfully.</div>
+            <div class="card-header">System Event Log <span class="badge cyan">LIVE</span><span style="font-size:10px;color:var(--text-dim);font-family:var(--font-mono);" id="gb-ts"></span></div>
+            <div style="font-family:var(--font-mono);font-size:13px;color:var(--text-muted);display:flex;flex-direction:column;gap:6px;" id="gb-events">
+              <div><span style="color:var(--text-dim);">—</span> <span style="color:var(--quantum-cyan);">[BOOT]</span> Telemetry dashboard initializing...</div>
             </div>
           </div>
         </div>
@@ -265,7 +306,15 @@
               <div class="module-icon">🪪</div>
               <div class="module-title">Cognitive Passport</div>
               <div class="module-desc">Generate a Soulbound Token (SBT) with sensory profile, communication preferences, and spoon capacity.</div>
-              <button class="module-btn">Launch Generator</button>
+              <button class="module-btn" onclick="openPassportModal()">Launch Generator</button>
+              <div class="passport-preview" id="passport-preview">
+                <div style="font-size:12px;color:var(--quantum-cyan);margin-bottom:12px;">✓ Passport Issued</div>
+                <div class="field"><span class="field-label">Token ID</span><span class="field-value" id="pp-token-id">—</span></div>
+                <div class="field"><span class="field-label">Display Name</span><span class="field-value" id="pp-name">—</span></div>
+                <div class="field"><span class="field-label">Wallet</span><span class="field-value" id="pp-wallet">—</span></div>
+                <div class="field"><span class="field-label">Privacy</span><span class="field-value" id="pp-privacy">🔓 Plaintext</span></div>
+                <div style="margin-top:12px;"><a href="#" class="module-btn" onclick="openPassportModal();return false;">Update Passport</a></div>
+              </div>
             </div>
             <div class="module-card">
               <div class="module-icon">❤️</div>
@@ -288,15 +337,120 @@
               <h2>The Genesis Spark</h2>
               <p>The LOVE token unlocks upon the first successful node synchronization. The cryptographic clock is running. Be the spark that ignites the mesh.</p>
               <div class="genesis-row">
-                <span style="color:var(--quantum-cyan);">Awaiting Ignition</span>
+                <span style="color:var(--quantum-cyan);" id="genesis-status-label">Awaiting Ignition</span>
                 <span><strong id="genesis-raised" style="color:var(--text-bright);">0.000</strong> / 0.01 Base ETH</span>
               </div>
               <div class="genesis-progress">
                 <div class="genesis-progress-fill" id="genesis-fill"></div>
               </div>
+              <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text-dim);font-family:var(--font-mono);margin:4px 0 12px;">
+                <span>Watchers: <strong id="genesis-watchers" style="color:var(--text-muted);">—</strong></span>
+                <span id="genesis-trigger" style="color:var(--text-dim);"></span>
+              </div>
               <button class="btn-ignite" id="genesis-btn">Awaiting Funds</button>
               <div style="margin-top:24px;font-size:12px;color:var(--text-dim);font-family:var(--font-mono);">Target: classicwilly.eth on Base</div>
             </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-overlay" id="passport-modal">
+        <div class="modal">
+          <div class="modal-header">
+            <h2>🪪 Cognitive Passport Generator</h2>
+            <button class="modal-close" onclick="closePassportModal()">✕</button>
+          </div>
+          <div class="wallet-bar">
+            <span class="status-dot" id="wallet-dot"></span>
+            <span id="wallet-label" style="color:var(--text-muted);font-size:13px;">Wallet not connected</span>
+            <span class="addr" id="wallet-addr" style="display:none;"></span>
+            <div style="margin-left:auto;">
+              <button class="btn-ghost" id="wallet-btn" onclick="toggleWallet()">Connect Wallet</button>
+            </div>
+          </div>
+          <div id="passport-form">
+            <div class="form-group">
+              <label>Display Name</label>
+              <input type="text" id="pf-name" placeholder="How you want to be addressed" maxlength="64" />
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Auditory Sensitivity</label>
+                <select id="pf-auditory">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Visual Sensitivity</label>
+                <select id="pf-visual">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Tactile Sensitivity</label>
+                <select id="pf-tactile">
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Notification Threshold</label>
+                <select id="pf-threshold">
+                  <option value="low">Low Urgency Only</option>
+                  <option value="medium" selected>Medium Urgency</option>
+                  <option value="high">All Notifications</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Preferred Channels</label>
+              <select id="pf-channels" multiple>
+                <option value="text" selected>Text / Chat</option>
+                <option value="async">Async (Email)</option>
+                <option value="sync">Sync (Real-time)</option>
+                <option value="voice">Voice</option>
+                <option value="video">Video</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Baseline Spoon Capacity</label>
+                <input type="number" id="pf-spoons" min="1" max="12" value="12" />
+              </div>
+              <div class="form-group">
+                <label>Masking Frequency</label>
+                <select id="pf-masking">
+                  <option value="never">Never Mask</option>
+                  <option value="sometimes" selected>Sometimes Mask</option>
+                  <option value="often">Often Mask</option>
+                  <option value="always">Always Mask</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Masking Triggers (comma-separated)</label>
+              <input type="text" id="pf-triggers" placeholder="e.g. crowds, phone calls, meetings" />
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+              <label class="privacy-toggle" onclick="togglePrivacy()">
+                <span class="lock-icon" id="privacy-icon">🔓</span>
+                <span id="privacy-label">Plaintext (readable on-chain)</span>
+              </label>
+              <span class="zk-badge" id="privacy-badge">🔓 Plaintext</span>
+            </div>
+            <div style="display:flex;gap:12px;">
+              <button class="btn btn-primary" id="mint-btn" onclick="mintPassport()" disabled>
+                ✦ Issue Passport
+              </button>
+              <button class="btn btn-secondary" onclick="closePassportModal()">Cancel</button>
+            </div>
+            <div id="mint-status" style="margin-top:16px;"></div>
           </div>
         </div>
       </div>
@@ -325,13 +479,96 @@
     navBtns.forEach(btn => { btn.addEventListener('click', () => { navBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); const target = btn.dataset.target; views.forEach(v => { v.classList.remove('active'); if (v.id === target) v.classList.add('active'); }); titleEl.innerHTML = btn.innerHTML; if (target === 'genesis') updateGenesisProgress(); if (target === 'workspace') setTimeout(() => { if (window.term && window.fitAddon) window.fitAddon.fit(); }, 100); }); });
     let genesisRaised = 0.001;
     async function updateGenesisProgress() {
-      try { const resp = await fetch('https://genesis-spark.trimtab-signal.workers.dev/status'); if (!resp.ok) throw new Error('Worker offline'); const data = await resp.json(); genesisRaised = data.raised; } catch { genesisRaised = Math.min(0.01, genesisRaised + 0.0005); }
+      try { const resp = await fetch('https://genesis-spark.trimtab-signal.workers.dev/status'); if (!resp.ok) throw new Error('Worker offline'); const data = await resp.json(); genesisRaised = data.raised; document.getElementById('genesis-watchers').textContent = data.watchers || '—'; if (data.ignited) { document.getElementById('genesis-status-label').textContent = '✦ Ignited!'; document.getElementById('genesis-status-label').style.color = 'var(--quantum-gold)'; } } catch { genesisRaised = Math.min(0.01, genesisRaised + 0.0005); }
       const pct = Math.min(100, (genesisRaised / 0.01) * 100); document.getElementById('genesis-raised').textContent = genesisRaised.toFixed(3); document.getElementById('genesis-fill').style.width = pct + '%';
       const btn = document.getElementById('genesis-btn');
-      if (genesisRaised >= 0.009) { btn.classList.add('ready'); btn.textContent = '✦ IGNITE THE GENESIS GATE'; btn.disabled = false; } else { btn.classList.remove('ready'); btn.textContent = 'Awaiting Funds'; btn.disabled = true; }
+      if (genesisRaised >= 0.009) { btn.classList.add('ready'); btn.textContent = '✦ IGNITE THE GENESIS GATE'; btn.disabled = false; btn.onclick = async () => { if (!window.ethereum) { alert('Connect a wallet to ignite. Send ≥0.01 ETH to classicwilly.eth on Base.'); return; } try { const provider = new ethers.providers.Web3Provider(window.ethereum); await provider.send('eth_requestAccounts', []); const signer = provider.getSigner(); const tx = await signer.sendTransaction({ to: 'classicwilly.eth', value: ethers.utils.parseEther('0.01') }); btn.textContent = '✦ Igniting...'; btn.disabled = true; await tx.wait(); btn.textContent = '✦ IGNITED'; alert('Genesis Spark ignited! Tx: ' + tx.hash); } catch(e) { alert('Transaction failed: ' + e.message); btn.disabled = false; } }; } else { btn.classList.remove('ready'); btn.textContent = 'Awaiting Funds'; btn.disabled = true; btn.onclick = null; }
     }
     updateGenesisProgress(); setInterval(updateGenesisProgress, 5000);
+
+    // ─── Glass Box Live Telemetry ────────────────────────────────────
+
+    async function updateGlassBox() {
+      try {
+        const [ccResp, genResp, meshResp] = await Promise.allSettled([
+          fetch('https://command-center.trimtab-signal.workers.dev/api/status').then(r => r.ok ? r.json() : null),
+          fetch('https://genesis-spark.trimtab-signal.workers.dev/status').then(r => r.ok ? r.json() : null),
+          fetch('https://k4-cage.trimtab-signal.workers.dev/api/mesh').then(r => r.ok ? r.json() : null)
+        ]);
+        if (ccResp.status === 'fulfilled' && ccResp.value) {
+          const d = ccResp.value;
+          document.getElementById('gb-fleet').textContent = d.workers ? d.workers.filter(w => w.status === 'online' || w.status === 'healthy').length + '/' + d.workers.length : '—';
+          document.getElementById('gb-fleet-desc').textContent = d.workers ? `Fleet: ${d.workers.length} workers polled` : 'Command center online';
+          document.getElementById('gb-ts').textContent = d.updated ? ' · last: ' + new Date(d.updated).toLocaleTimeString() : '';
+        }
+        if (genResp.status === 'fulfilled' && genResp.value) {
+          const d = genResp.value;
+          document.getElementById('gb-genesis').textContent = (d.raised || 0).toFixed(3) + ' ETH';
+          document.getElementById('gb-genesis-desc').textContent = d.ignited ? '✦ Ignited!' : `${d.watchers || 0} watchers · ${((d.raised || 0) / 0.01 * 100).toFixed(0)}% to goal`;
+          document.getElementById('gb-genesis').style.color = d.ignited ? 'var(--quantum-gold)' : 'var(--quantum-green)';
+        }
+        if (meshResp.status === 'fulfilled' && meshResp.value) {
+          const d = meshResp.value;
+          const vCount = d.mesh ? d.mesh.vertices || d.vertices : d.vertices || 0;
+          document.getElementById('gb-mesh').textContent = vCount + 'V/' + (d.edges || 0) + 'E';
+          document.getElementById('gb-mesh-desc').textContent = d.rigidity || (d.topology === 'K4' ? 'Rigid (β₂=1)' : 'K4 topology');
+        }
+        const events = document.getElementById('gb-events');
+        const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+        const sysMsg = document.createElement('div');
+        sysMsg.innerHTML = `<span style="color:var(--text-dim);">${ts}</span> <span style="color:var(--quantum-cyan);">[TELEMETRY]</span> Dashboard poll cycle complete`;
+        if (events.children.length > 20) events.removeChild(events.lastChild);
+        events.insertBefore(sysMsg, events.firstChild);
+      } catch {}
+    }
+    setTimeout(updateGlassBox, 500); setInterval(updateGlassBox, 15000);
+
+    // ─── Module Button Handlers ─────────────────────────────────────
+
+    document.querySelectorAll('.module-btn').forEach(btn => {
+      const text = btn.textContent.trim();
+      if (text === 'Open Ledger') {
+        btn.onclick = () => { window.open('https://bonding.p31ca.org', '_blank'); };
+      } else if (text === 'Play') {
+        btn.onclick = () => { window.open('https://k4-cage.trimtab-signal.workers.dev/', '_blank'); };
+      }
+    });
+
     document.getElementById('bionic-toggle').addEventListener('click', function() { document.body.classList.toggle('bionic-reading'); this.classList.toggle('active'); });
+
+    // ─── K4 Topology Live Refresh ──────────────────────────────────
+
+    async function updateK4Topology() {
+      try {
+        const resp = await fetch('https://k4-cage.trimtab-signal.workers.dev/api/mesh');
+        if (!resp.ok) return;
+        const data = await resp.json();
+        const vertices = data.mesh?.vertices || data.vertices || [];
+        const ts = new Date().toLocaleTimeString('en-US', { hour12: false });
+        document.getElementById('k4-last-update').textContent = '· ' + ts;
+        const nodeLabels = ['Core', 'Agent', 'Mobile'];
+        const nodesEl = document.getElementById('k4-nodes');
+        nodesEl.innerHTML = '';
+        for (let i = 0; i < Math.min(3, vertices.length); i++) {
+          const v = vertices[i];
+          const label = nodeLabels[i] || 'Node ' + i;
+          const online = v && (v.status === 'online' || v.status === 'synced' || v.presence);
+          const color = online ? 'var(--quantum-green)' : 'var(--text-dim)';
+          const dot = online ? '●' : '○';
+          const name = v?.name || v?.id || label;
+          nodesEl.innerHTML += `<div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">${name}</span><span style="color:${color};">${dot} ${online ? 'SYNCED' : 'OFFLINE'}</span></div>`;
+        }
+        ['k4-v0','k4-v1','k4-v2','k4-v3'].forEach((id, i) => {
+          const el = document.getElementById(id);
+          if (i < vertices.length && el) {
+            const online = vertices[i] && (vertices[i].status === 'online' || vertices[i].status === 'synced' || vertices[i].presence);
+            el.setAttribute('fill', online ? '#00ff66' : '#4a5b78');
+            el.setAttribute('r', online ? '4' : '3');
+          }
+        });
+      } catch {}
+    }
+    setTimeout(updateK4Topology, 1000); setInterval(updateK4Topology, 10000);
     const JITTERBUG_URL = 'https://jitterbug-api.trimtab-signal.workers.dev/brain-dump';
     const JITTERBUG_PSK = 'p31-sierpinski-ophile-ophore-ssm-1782167800';
     document.getElementById('bd-submit').addEventListener('click', async function() {
@@ -340,9 +577,11 @@
       try {
         const resp = await fetch(JITTERBUG_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${JITTERBUG_PSK}` }, body: JSON.stringify({ projectName: "Operator Cognitive Offload", coreProblem: text, constraints: [ { id: "c1", rule: "Decompose into actionable axes", severity: "strong" } ], desiredEndState: { description: "Decomposed actionable axes", targetStage: "seed", measurableCriteria: [] }, knownAssets: [], openQuestions: [], metadata: { capturedAt: new Date().toISOString(), operator: "local", source: "app", tags: ["braindump"] } }) });
         if (!resp.ok) throw new Error(`API error: ${resp.status}`); const data = await resp.json();
-        let statusResp = await fetch(`${JITTERBUG_URL}/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); let statusData = await statusResp.json(); let attempts = 0;
-        while (statusData.status === 'pending' && attempts < 5) { await new Promise(r => setTimeout(r, 2000)); statusResp = await fetch(`${JITTERBUG_URL}/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); statusData = await statusResp.json(); attempts++; }
-        inner.innerHTML = `<div class="axis-card"><div class="axis-title">Axis 1: Extracted Vectors</div><p style="font-size:14px;color:var(--text-main);">Successfully decomposed input into cognitive axes via Jitterbug pipeline.</p><div style="margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);">ID: ${data.id} - Status: ${statusData.status}</div></div><div class="axis-card gold"><div class="axis-title gold">Axis 2: Emotional Context</div><p style="font-size:14px;color:var(--text-main);">High cognitive load detected. Recommendations generated.</p></div>`; results.classList.add('active');
+        let statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); let statusData = await statusResp.json(); let attempts = 0;
+        while (statusData.status === 'pending' && attempts < 10) { await new Promise(r => setTimeout(r, 2000)); statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); statusData = await statusResp.json(); attempts++; }
+        let axesHtml = ''; if (statusData.axes && Array.isArray(statusData.axes)) { statusData.axes.forEach((ax, i) => { axesHtml += `<div class="axis-card ${i % 2 === 1 ? 'gold' : ''}"><div class="axis-title ${i % 2 === 1 ? 'gold' : ''}">${ax.title || 'Axis ' + (i+1)}</div><p style="font-size:14px;color:var(--text-main);">${ax.description || ax.insight || JSON.stringify(ax)}</p></div>`; }); }
+        if (!axesHtml) axesHtml = `<div class="axis-card"><div class="axis-title">Decomposition Complete</div><p style="font-size:14px;color:var(--text-main);">Status: ${statusData.status}${statusData.convergence ? ' · Convergence: ' + statusData.convergence.overall : ''}</p><div style="margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);">ID: ${data.id}</div></div>`;
+        inner.innerHTML = axesHtml; results.classList.add('active');
       } catch (err) { inner.innerHTML = `<div style="color:#ff003c;font-size:14px;border:1px solid rgba(255,0,60,0.3);background:rgba(255,0,60,0.05);padding:16px;border-radius:var(--radius-sm);">Error: ${err.message}</div>`; results.classList.add('active'); }
       finally { this.innerHTML = orig; this.disabled = false; input.value = ''; }
     });
@@ -354,6 +593,195 @@
       function connect() { statusEl.textContent = '● Connecting...'; statusEl.style.color = '#8b9bb4'; try { ws = new WebSocket('wss://stream.p31ca.org/pty'); ws.binaryType = 'arraybuffer'; ws.onopen = () => { statusEl.textContent = '● Connected'; statusEl.style.color = '#00ff66'; if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; } term.clear(); term.writeln('\x1b[38;2;74;91;120m[SYSTEM] P31 Sovereign OS v2.0\x1b[0m'); term.writeln('\x1b[38;2;0;255;102m✓ WebSocket established.\x1b[0m'); term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); }; ws.onmessage = (ev) => { if (ev.data instanceof ArrayBuffer) { const decoder = new TextDecoder('utf-8'); const text = decoder.decode(ev.data); term.write(text); } else if (typeof ev.data === 'string') { term.write(ev.data); } }; ws.onclose = () => { statusEl.textContent = '● Disconnected'; statusEl.style.color = '#ff003c'; if (!reconnectTimer) { reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 3000); } }; ws.onerror = () => { statusEl.textContent = '● Error'; statusEl.style.color = '#ff003c'; ws.close(); }; term.onData((data) => { if (ws && ws.readyState === WebSocket.OPEN) { ws.send(data); } }); window.addEventListener('resize', () => { fitAddon.fit(); if (ws && ws.readyState === WebSocket.OPEN) { const dims = term.cols + ':' + term.rows; ws.send('\x1b[8;' + dims + 't'); } }); } catch (e) { statusEl.textContent = '● Connection failed'; statusEl.style.color = '#ff003c'; if (!reconnectTimer) { reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 5000); } } }
       connect();
     })();
+
+    // ─── Cognitive Passport Generator ────────────────────────────────────
+
+    const PASSPORT_ADDRESS = '0x0000000000000000000000000000000000000000'; // set after deploy
+    const PASSPORT_ABI = [
+      'function issuePassport(address to, string displayName, string sensoryProfile, string communicationPrefs, string spoonProfile, string maskingProfile) external returns (uint256)',
+      'function getPassportData(uint256 tokenId) external view returns (string, string, string, string, string, uint256, uint256, bool)',
+      'function locked(uint256 tokenId) external view returns (bool)',
+      'function updatePassport(uint256 tokenId, string sensoryProfile, string communicationPrefs, string spoonProfile, string maskingProfile) external',
+    ];
+    const PASSROUTE_RPC = 'https://mainnet.base.org';
+    const PASSPORT_EXPLORER = 'https://basescan.org/tx/';
+
+    let signer = null;
+    let walletAddress = null;
+    let privacyEncrypt = false;
+    let passportTokenId = null;
+
+    async function openPassportModal() {
+      document.getElementById('passport-modal').classList.add('active');
+      if (passportTokenId && walletAddress) await loadPassportPreview();
+      document.getElementById('mint-status').innerHTML = '';
+    }
+    function closePassportModal() {
+      document.getElementById('passport-modal').classList.remove('active');
+    }
+    document.getElementById('passport-modal').addEventListener('click', function(e) {
+      if (e.target === this) closePassportModal();
+    });
+
+    async function toggleWallet() {
+      if (signer) {
+        signer = null; walletAddress = null;
+        document.getElementById('wallet-dot').className = 'status-dot';
+        document.getElementById('wallet-label').textContent = 'Wallet not connected';
+        document.getElementById('wallet-addr').style.display = 'none';
+        document.getElementById('wallet-btn').textContent = 'Connect Wallet';
+        document.getElementById('mint-btn').disabled = true;
+        document.getElementById('user-avatar').textContent = '✦';
+        document.getElementById('user-avatar').style.color = '';
+        document.getElementById('user-name').textContent = 'Local Operator';
+        document.getElementById('user-status').textContent = '● Offline First';
+        return;
+      }
+      if (!window.ethereum) {
+        document.getElementById('wallet-label').textContent = 'MetaMask not detected';
+        return;
+      }
+      try {
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send('eth_requestAccounts', []);
+        signer = provider.getSigner();
+        walletAddress = await signer.getAddress();
+        document.getElementById('wallet-dot').className = 'status-dot connected';
+        document.getElementById('wallet-label').textContent = 'Connected';
+        document.getElementById('wallet-addr').textContent = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+        document.getElementById('wallet-addr').style.display = 'inline';
+        document.getElementById('wallet-btn').textContent = 'Disconnect';
+        document.getElementById('mint-btn').disabled = false;
+        document.getElementById('user-avatar').textContent = '●';
+        document.getElementById('user-avatar').style.color = 'var(--quantum-green)';
+        document.getElementById('user-name').textContent = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+        document.getElementById('user-status').textContent = '● Wallet Connected';
+      } catch (e) {
+        document.getElementById('wallet-label').textContent = 'Connection rejected';
+      }
+    }
+
+    function togglePrivacy() {
+      privacyEncrypt = !privacyEncrypt;
+      document.getElementById('privacy-icon').textContent = privacyEncrypt ? '🔒' : '🔓';
+      document.getElementById('privacy-label').textContent = privacyEncrypt
+        ? 'Encrypted (ZK-style, off-chain only)' : 'Plaintext (readable on-chain)';
+      document.getElementById('privacy-badge').className = 'zk-badge' + (privacyEncrypt ? ' encrypted' : '');
+      document.getElementById('privacy-badge').textContent = privacyEncrypt ? '🔒 Encrypted' : '🔓 Plaintext';
+    }
+
+    async function deriveEncryptionKey() {
+      if (!walletAddress) return null;
+      const enc = new TextEncoder();
+      const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(walletAddress + ':p31-cogpass-v1'),
+        { name: 'PBKDF2' }, false, ['deriveKey']);
+      return crypto.subtle.deriveKey({ name: 'PBKDF2', salt: enc.encode('p31-cogpass-salt'), iterations: 100000, hash: 'SHA-256' },
+        keyMaterial, { name: 'AES-GCM', length: 256 }, false, ['encrypt', 'decrypt']);
+    }
+
+    async function encryptField(value) {
+      if (!privacyEncrypt || !value) return value;
+      const key = await deriveEncryptionKey();
+      if (!key) return value;
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encoded = new TextEncoder().encode(value);
+      const encrypted = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, encoded);
+      const combined = new Uint8Array(iv.length + encrypted.byteLength);
+      combined.set(iv, 0);
+      combined.set(new Uint8Array(encrypted), iv.length);
+      return 'enc:aes256:' + btoa(String.fromCharCode(...combined));
+    }
+
+    async function decryptField(encoded) {
+      if (!encoded || !encoded.startsWith('enc:aes256:')) return encoded;
+      const key = await deriveEncryptionKey();
+      if (!key) return '🔒 Encrypted';
+      try {
+        const raw = Uint8Array.from(atob(encoded.slice(11)), c => c.charCodeAt(0));
+        const iv = raw.slice(0, 12);
+        const data = raw.slice(12);
+        const decrypted = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+        return new TextDecoder().decode(decrypted);
+      } catch { return '🔒 Locked (wrong key)'; }
+    }
+
+    async function mintPassport() {
+      const statusEl = document.getElementById('mint-status');
+      if (!signer || !walletAddress) { statusEl.innerHTML = '<div style="color:#ff003c;">Connect your wallet first.</div>'; return; }
+      const name = document.getElementById('pf-name').value.trim();
+      if (!name) { statusEl.innerHTML = '<div style="color:#ff003c;">Display name is required.</div>'; return; }
+
+      const auditory = document.getElementById('pf-auditory').value;
+      const visual = document.getElementById('pf-visual').value;
+      const tactile = document.getElementById('pf-tactile').value;
+      const threshold = document.getElementById('pf-threshold').value;
+      const channels = Array.from(document.getElementById('pf-channels').selectedOptions).map(o => o.value);
+      const spoons = parseInt(document.getElementById('pf-spoons').value) || 12;
+      const masking = document.getElementById('pf-masking').value;
+      const triggers = document.getElementById('pf-triggers').value.split(',').map(s => s.trim()).filter(Boolean);
+
+      const sensoryProfile = JSON.stringify({ auditory, visual, tactile });
+      const commPrefs = JSON.stringify({ channels, threshold });
+
+      let spoonProfile = JSON.stringify({ baseline: spoons, current: spoons, threshold: 3 });
+      let maskingProfile = JSON.stringify({ frequency: masking, triggers });
+
+      let sensoryFinal = sensoryProfile;
+      let commFinal = commPrefs;
+      if (privacyEncrypt) {
+        statusEl.innerHTML = '<div style="color:var(--text-muted);">🔐 Encrypting sensitive fields...</div>';
+        sensoryFinal = await encryptField(sensoryProfile);
+        commFinal = await encryptField(commPrefs);
+      }
+
+      statusEl.innerHTML = '<div style="color:var(--text-muted);">✍️ Submitting transaction...</div>';
+      try {
+        const contract = new ethers.Contract(PASSPORT_ADDRESS, PASSPORT_ABI, signer);
+        let tx;
+        if (passportTokenId) {
+          tx = await contract.updatePassport(passportTokenId, sensoryFinal, commFinal, spoonProfile, maskingProfile);
+        } else {
+          tx = await contract.issuePassport(walletAddress, name, sensoryFinal, commFinal, spoonProfile, maskingProfile);
+        }
+        statusEl.innerHTML = `<div style="color:var(--text-muted);">⏳ Waiting for confirmation... <span style="font-family:var(--font-mono);font-size:11px;">${tx.hash.slice(0,10)}...</span></div>`;
+        const receipt = await tx.wait();
+        passportTokenId = passportTokenId || (await getLatestTokenId(contract));
+        await loadPassportPreview(receipt.transactionHash);
+        statusEl.innerHTML = `<div class="success-msg">
+          <div style="font-size:32px;">✅</div>
+          <div style="font-size:16px;color:var(--text-bright);margin:8px 0;">Passport ${passportTokenId ? 'Updated' : 'Issued'}!</div>
+          <div class="token-id">#${passportTokenId || '—'}</div>
+          <div class="tx-link"><a href="${PASSPORT_EXPLORER}${receipt.transactionHash}" target="_blank" style="color:var(--quantum-cyan);">${receipt.transactionHash}</a></div>
+        </div>`;
+      } catch (e) {
+        statusEl.innerHTML = `<div style="color:#ff003c;background:rgba(255,0,60,0.05);padding:12px;border-radius:var(--radius-sm);">${e.message || 'Transaction failed'}</div>`;
+      }
+    }
+
+    async function getLatestTokenId(contract) {
+      try {
+        const filter = contract.filters.PassportIssued(null, walletAddress);
+        const events = await contract.queryFilter(filter, -1000000, 'latest');
+        if (events.length > 0) return events[events.length - 1].args.tokenId.toString();
+      } catch {}
+      return null;
+    }
+
+    async function loadPassportPreview(txHash) {
+      const pp = document.getElementById('passport-preview');
+      if (!passportTokenId) { pp.classList.remove('active'); return; }
+      document.getElementById('pp-token-id').textContent = '#' + passportTokenId;
+      document.getElementById('pp-wallet').textContent = walletAddress.slice(0,6) + '...' + walletAddress.slice(-4);
+      try {
+        const provider = new ethers.providers.JsonRpcProvider(PASSROUTE_RPC);
+        const contract = new ethers.Contract(PASSPORT_ADDRESS, PASSPORT_ABI, provider);
+        const data = await contract.getPassportData(passportTokenId);
+        document.getElementById('pp-name').textContent = data[0];
+        const isEncrypted = data[1].startsWith('enc:');
+        document.getElementById('pp-privacy').textContent = isEncrypted ? '🔒 Encrypted' : '🔓 Plaintext';
+        pp.classList.add('active');
+      } catch { pp.classList.add('active'); }
+    }
   </script>
 </body>
 </html>
