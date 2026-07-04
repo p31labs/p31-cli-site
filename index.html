@@ -1743,39 +1743,48 @@
       };
       window.addEventListener('resize', resize);
       resize();
-      // Start polling
+      // Start polling real webhook worker
       this.startPolling();
       // Simulate watcher count
       this.simulateWatchers();
-      // Simulate balance progression for demo
-      this.simulateBalance();
     },
 
-    // ── Balance Polling ───────────────────────────────────────────────
+    // ── Webhook Polling ──────────────────────────────────────────────
     startPolling() {
-      const poll = () => {
-        // In production: fetch from webhook worker
-        // For now, simulated via simulateBalance
+      const WEBHOOK_URL = 'https://genesis-spark.trimtab-signal.workers.dev/status';
+      let fallbackActive = false;
+      const poll = async () => {
+        try {
+          const resp = await fetch(WEBHOOK_URL, { signal: AbortSignal.timeout(5000) });
+          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+          const data = await resp.json();
+          this.balance = data.raised;
+          fallbackActive = false;
+          if (data.ignited && this.state === 'awaiting') {
+            this.setState('ready');
+          }
+        } catch {
+          if (!fallbackActive) {
+            console.warn('[GenesisSpark] Webhook unreachable, enabling fallback simulation');
+            fallbackActive = true;
+            this.startFallback();
+          }
+        }
         this.updateUI();
       };
-      setInterval(poll, 5000);
+      poll();
+      setInterval(poll, 3000);
     },
 
-    // ── Balance Simulation (remove in production) ─────────────────────
-    simulateBalance() {
-      // Simulate slow progress toward threshold for demo
-      // Remove this when real webhook is connected
-      let progress = 0;
-      const interval = setInterval(() => {
-        if (this.state === 'liftoff') { clearInterval(interval); return; }
-        progress += Math.random() * 0.0003;
-        if (progress >= this.threshold * 0.99 && progress < this.threshold) {
-          progress = this.threshold * 0.99;
-        }
-        this.balance = progress;
-        if (progress >= this.threshold * 0.99 && this.state === 'awaiting') {
+    // ── Fallback Simulation (worker offline) ─────────────────────────
+    startFallback() {
+      if (this._fallbackInterval) return;
+      this._fallbackInterval = setInterval(() => {
+        if (this.state === 'liftoff') { clearInterval(this._fallbackInterval); return; }
+        this.balance = Math.min(0.0099, this.balance + Math.random() * 0.0003);
+        if (this.balance >= 0.0099 && this.state === 'awaiting') {
           this.setState('ready');
-          clearInterval(interval);
+          clearInterval(this._fallbackInterval);
         }
         this.updateUI();
       }, 4000);
