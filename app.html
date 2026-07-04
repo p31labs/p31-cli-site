@@ -685,7 +685,7 @@
       const term = new Terminal({ theme: { background: 'transparent', foreground: '#e2e8f0', cursor: '#00f0ff', black: '#030305', cyan: '#5cc2c9', magenta: '#b53cff' }, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, lineHeight: 1.5, cursorBlink: true, disableStdin: false, convertEol: true });
       window.term = term; const fitAddon = new FitAddon.FitAddon(); window.fitAddon = fitAddon; term.loadAddon(fitAddon); term.loadAddon(new WebLinksAddon.WebLinksAddon()); term.open(container); fitAddon.fit();
       const statusEl = document.getElementById('terminal-status'); let ws = null; let reconnectTimer = null; let attemptCount = 0; let localMode = false;
-      const PROXY_URL = 'https://phos-ai-proxy.trimtab-signal.workers.dev/ai/chat';
+      const PROXY_URL = 'https://p31-llm-proxy.trimtab-signal.workers.dev/v1/chat/completions';
       const PROXY_TOKEN = 'p31-sierpinski-ophile-ophore-ssm-1782167800';
       function startLocalSimulation() {
         localMode = true; statusEl.textContent = '● Local Mode'; statusEl.style.color = '#feca57';
@@ -717,9 +717,14 @@
                 headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${PROXY_TOKEN}` },
                 body: JSON.stringify({ messages: [{ role: 'user', content: message }], stream: true })
               })
-              .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.body.getReader(); })
+              .then(res => {
+                if (!res.ok) { term.writeln('\x1b[38;2;255;0;60m[Agent] API error: ' + res.status + ' — proxy may need API keys configured\x1b[0m'); return null; }
+                return res.body.getReader();
+              })
               .then(reader => {
+                if (!reader) { term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); return; }
                 const decoder = new TextDecoder('utf-8');
+                let sseBuffer = '';
                 term.writeln('\x1b[38;2;181;60;255m[Agent]\x1b[0m');
                 function readChunk() {
                   return reader.read().then(({ done, value }) => {
@@ -727,14 +732,27 @@
                       term.write('\r\n\x1b[38;2;0;255;102m\u2713 Done.\x1b[0m');
                       term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); return;
                     }
-                    term.write('\x1b[38;2;200;180;255m' + decoder.decode(value, { stream: true }) + '\x1b[0m');
+                    sseBuffer += decoder.decode(value, { stream: true });
+                    const lines = sseBuffer.split('\n');
+                    sseBuffer = lines.pop() || '';
+                    for (const line of lines) {
+                      if (line.startsWith('data: ')) {
+                        const payload = line.slice(6);
+                        if (payload === '[DONE]') continue;
+                        try {
+                          const parsed = JSON.parse(payload);
+                          const content = parsed.choices?.[0]?.delta?.content || parsed.choices?.[0]?.text || '';
+                          if (content) term.write('\x1b[38;2;200;180;255m' + content.replace(/\n/g, '\r\n') + '\x1b[0m');
+                        } catch {}
+                      }
+                    }
                     return readChunk();
                   });
                 }
                 return readChunk();
               })
               .catch(err => {
-                term.writeln('\x1b[38;2;255;0;60m[ERROR] AI proxy unreachable: ' + err.message + '\x1b[0m');
+                term.writeln('\x1b[38;2;255;0;60m[Agent] Connection failed: ' + err.message + '\x1b[0m');
                 term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
               });
             } else if (cmd === '/help' || cmd === 'help') {
