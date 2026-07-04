@@ -6,36 +6,45 @@
   <title>P31 Documentation</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{
-      --bg:#060a12;--surface:#0b1222;--border:#1a2640;
-      --text:#d1d9e8;--muted:#6b7d9e;--neon:#39ff14;--teal:#2dd4bf;
-      --radius:8px;
+    :root {
+      --bg-primary: #201d1d;
+      --bg-surface: #2a2626;
+      --border: rgba(253,252,252,0.08);
+      --text: #fdfcfc;
+      --muted: #9a9898;
+      --dim: #6b6868;
+      --accent: #7c3aed;
+      --radius: 4px;
+      --font-mono: 'JetBrains Mono', 'Menlo', monospace;
     }
-    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7}
-    .container{max-width:900px;margin:0 auto;padding:0 1.5rem}
+
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-mono);line-height:1.7;font-size:14px}
+    .container{max-width:960px;margin:0 auto;padding:0 1.5rem}
     nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border)}
-    .logo{font-weight:900;font-size:1.4rem;color:var(--neon);letter-spacing:-.5px}
-    .logo span{color:var(--teal)}
-    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;margin-left:1.5rem}
-    .nav-links a:hover{color:var(--neon)}
-    h1{font-size:2.2rem;font-weight:800;margin:2.5rem 0 .5rem}
-    h1 .accent{color:var(--neon)}
-    p{color:var(--muted);margin-bottom:2rem}
-    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:1rem;margin-bottom:3rem}
-    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-decoration:none;color:inherit;transition:border-color .2s}
-    .card:hover{border-color:var(--teal)}
-    .card h3{font-size:1.1rem;color:var(--neon);margin-bottom:.3rem}
-    .card p{font-size:.85rem;color:var(--muted);margin:0}
-    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;margin-top:2rem}
-    footer a{color:var(--teal);text-decoration:none}
+    .logo{font-weight:700;font-size:1.2rem;color:var(--text-primary);letter-spacing:1px}
+    .logo span{color:var(--accent)}
+    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.8rem;margin-left:1.5rem;transition:color .15s}
+    .nav-links a:hover{color:var(--accent)}
+    h1{font-size:2rem;font-weight:700;margin:2.5rem 0 .5rem}
+    h1 .accent{color:var(--accent)}
+    p{color:var(--text-muted);margin-bottom:2rem;max-width:640px}
+    .cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:3rem}
+    .card{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;text-decoration:none;color:inherit;transition:border-color .2s}
+    .card:hover{border-color:var(--accent)}
+    .card h3{font-size:1rem;color:var(--text-primary);margin-bottom:.4rem;font-weight:600}
+    .card h3 span{color:var(--accent)}
+    .card p{font-size:.8rem;color:var(--text-muted);margin:0;line-height:1.6}
+    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--dim);font-size:.8rem;margin-top:2rem}
+    footer a{color:var(--accent);text-decoration:none}
+    footer a:hover{color:var(--text-primary)}
   </style>
 </head>
 <body>
 <nav class="container">
-  <div class="logo">P31<span>Labs</span> <span style="color:var(--muted);font-weight:400;font-size:.9rem">/ docs</span></div>
+  <div class="logo">P31<span>//</span> DOCS</div>
   <div class="nav-links">
     <a href="../">Home</a>
     <a href="https://github.com/p31labs/p31-cli">GitHub</a>
@@ -70,7 +79,7 @@
       <p>Router proxy, MCP transport, post-quantum identity, and the P31 stack.</p>
     </a>
   </div>
-  <p style="margin-top:-1.5rem">More guides coming soon. <a href="https://github.com/p31labs/p31-cli" style="color:var(--teal)">Contribute on GitHub</a>.</p>
+  <p>More guides coming soon. <a href="https://github.com/p31labs/p31-cli" style="color:var(--accent)">Contribute on GitHub</a>.</p>
 </div>
 <footer class="container">
   <p><a href="https://p31ca.org">p31ca.org</a> &nbsp;&middot;&nbsp; MIT License</p>

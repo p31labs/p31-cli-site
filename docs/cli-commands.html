@@ -9,35 +9,35 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-    :root{--bg:#060a12;--surface:#0b1222;--border:#1a2640;--text:#d1d9e8;--muted:#6b7d9e;--neon:#39ff14;--teal:#2dd4bf;--gold:#fbbf24;--radius:8px}
-    body{background:var(--bg);color:var(--text);font-family:'Inter',system-ui,sans-serif;line-height:1.7}
+    :root{--bg-primary:#201d1d;--bg-surface:#2a2626;--border:rgba(253,252,252,0.08);--text-primary:#fdfcfc;--text-muted:#9a9898;--accent-violet:#7c3aed;--accent-blue:#007aff;--gold:#fbbf24;--font-mono:JetBrains Mono,Menlo,monospace;--radius:4px}
+    body{background:var(--bg-primary);color:var(--text-primary);font-family:var(--font-mono);line-height:1.7}
     .container{max-width:860px;margin:0 auto;padding:0 1.5rem}
     nav{display:flex;justify-content:space-between;align-items:center;padding:1.2rem 0;border-bottom:1px solid var(--border)}
-    .logo{font-weight:900;font-size:1.4rem;color:var(--neon);letter-spacing:-.5px}
-    .logo span{color:var(--teal)}
-    .nav-links a{color:var(--muted);text-decoration:none;font-size:.9rem;margin-left:1.5rem;transition:color .15s}
-    .nav-links a:hover{color:var(--neon)}
-    h1{font-size:2rem;font-weight:800;margin:2.5rem 0 .3rem;color:var(--neon)}
-    h2{font-size:1.3rem;font-weight:700;margin:2rem 0 .5rem;color:var(--teal)}
-    p,li{color:var(--muted);margin-bottom:.5rem}
+    .logo{font-weight:900;font-size:1.4rem;color:var(--accent-violet);letter-spacing:-.5px}
+    .logo span{color:var(--accent-blue)}
+    .nav-links a{color:var(--text-muted);text-decoration:none;font-size:.9rem;margin-left:1.5rem;transition:color .15s}
+    .nav-links a:hover{color:var(--accent-violet)}
+    h1{font-size:2rem;font-weight:800;margin:2.5rem 0 .3rem;color:var(--accent-violet)}
+    h2{font-size:1.3rem;font-weight:700;margin:2rem 0 .5rem;color:var(--accent-blue)}
+    p,li{color:var(--text-muted);margin-bottom:.5rem}
     ul{padding-left:1.5rem;margin-bottom:1rem}
     li{margin-bottom:.3rem}
-    code{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--surface);padding:.15rem .4rem;border-radius:4px;color:var(--neon)}
-    pre{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;overflow-x:auto}
+    code{font-family:'JetBrains Mono',monospace;font-size:.85rem;background:var(--bg-surface);padding:.15rem .4rem;border-radius:4px;color:var(--accent-violet)}
+    pre{background:var(--bg-surface);border:1px solid var(--border);border-radius:var(--radius);padding:1rem 1.2rem;margin:1rem 0;overflow-x:auto}
     pre code{background:none;padding:0;font-size:.82rem}
-    a{color:var(--teal);text-decoration:none}
-    a:hover{color:var(--neon)}
+    a{color:var(--accent-blue);text-decoration:none}
+    a:hover{color:var(--accent-violet)}
     .cmd-table{width:100%;border-collapse:collapse;margin:1rem 0}
     .cmd-table th,.cmd-table td{text-align:left;padding:.6rem .8rem;border-bottom:1px solid var(--border);font-size:.9rem}
-    .cmd-table th{color:var(--teal);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
-    .cmd-table td{color:var(--muted)}
-    .cmd-table td:first-child{color:var(--neon);font-family:'JetBrains Mono',monospace;font-size:.82rem;white-space:nowrap}
-    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--muted);font-size:.85rem;margin-top:3rem}
+    .cmd-table th{color:var(--accent-blue);font-weight:600;font-size:.8rem;text-transform:uppercase;letter-spacing:.5px}
+    .cmd-table td{color:var(--text-muted)}
+    .cmd-table td:first-child{color:var(--accent-violet);font-family:'JetBrains Mono',monospace;font-size:.82rem;white-space:nowrap}
+    footer{text-align:center;padding:2rem 0;border-top:1px solid var(--border);color:var(--text-muted);font-size:.85rem;margin-top:3rem}
   </style>
 </head>
 <body>
 <nav class="container">
-  <div class="logo">P31<span>Labs</span> <span style="color:var(--muted);font-weight:400;font-size:.9rem">/ docs</span></div>
+  <div class="logo">P31<span>Labs</span> <span style="color:var(--text-muted);font-weight:400;font-size:.9rem">/ docs</span></div>
   <div class="nav-links"><a href="../">Home</a><a href="index.html">Docs</a><a href="https://github.com/p31labs/p31-cli">GitHub</a></div>
 </nav>
 <div class="container">

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PAPER-XXV: The Architecture of Resonant Trust | P31</title>
+  <meta name="description" content="A Constitutional Framework for Cognitive Sovereignty in the Post-Surveillance Era." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Inter:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-warm-void: #0a0806;
+      --surface-dark: rgba(20, 16, 12, 0.6);
+      --q-amber: #f5a623;
+      --q-gold: #ffd700;
+      --q-cyan-muted: #5cc2c9;
+      --text-main: #f5f0eb;
+      --text-muted: #a89888;
+      --text-dim: #7a6b5a;
+      --font-mono: 'JetBrains Mono', monospace;
+      --font-sans: 'Inter', sans-serif;
+      --font-serif: 'Merriweather', serif;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-warm-void);
+      color: var(--text-main);
+      font-family: var(--font-serif);
+      font-size: 18px;
+      line-height: 1.8;
+      -webkit-font-smoothing: antialiased;
+    }
+    .reader-container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 60px 24px 120px;
+    }
+    .nav-bar {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 80px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(245, 166, 35, 0.2);
+      padding-bottom: 16px;
+    }
+    .nav-bar a {
+      color: var(--q-amber);
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    .nav-bar a:hover { color: var(--q-gold); text-shadow: 0 0 10px rgba(255, 215, 0, 0.4); }
+    h1, h2, h3, h4 {
+      font-family: var(--font-sans);
+      color: var(--text-main);
+      margin-top: 3em;
+      margin-bottom: 1em;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-top: 0;
+      line-height: 1.2;
+      color: var(--q-amber);
+    }
+    h2 { font-size: 1.75rem; border-bottom: 1px solid rgba(245, 166, 35, 0.2); padding-bottom: 0.3em; }
+    h3 { font-size: 1.25rem; color: var(--q-gold); }
+    p { margin-bottom: 1.5em; max-width: 70ch; }
+    .meta-data {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      background: var(--surface-dark);
+      padding: 24px;
+      border-radius: 8px;
+      border-left: 4px solid var(--q-amber);
+      margin-bottom: 3em;
+    }
+    .meta-data p { margin-bottom: 0.5em; }
+    .meta-data p:last-child { margin-bottom: 0; }
+    blockquote {
+      font-style: italic;
+      font-size: 1.2rem;
+      color: var(--q-amber);
+      border-left: 2px solid var(--q-amber);
+      padding-left: 24px;
+      margin: 2em 0;
+      background: linear-gradient(90deg, rgba(245,166,35,0.05), transparent);
+      padding: 24px;
+      border-radius: 0 8px 8px 0;
+    }
+    code, pre {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background: var(--surface-dark);
+      color: var(--q-cyan-muted);
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+    }
+    pre {
+      padding: 24px;
+      overflow-x: auto;
+      border: 1px solid rgba(255,255,255,0.1);
+      margin: 2em 0;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 2em 0;
+      font-family: var(--font-sans);
+      font-size: 0.9rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 16px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    th { color: var(--q-amber); font-weight: 600; border-bottom: 2px solid rgba(245, 166, 35, 0.4); }
+    ul, ol { margin-bottom: 1.5em; padding-left: 24px; max-width: 70ch; }
+    li { margin-bottom: 0.5em; }
+    .formula {
+      display: block;
+      text-align: center;
+      font-family: var(--font-mono);
+      color: var(--q-gold);
+      font-size: 1.1rem;
+      margin: 2em 0;
+      padding: 24px;
+      background: var(--surface-dark);
+      border-radius: 8px;
+    }
+    @media (max-width: 768px) {
+      .reader-container { padding: 40px 20px 80px; }
+      h1 { font-size: 2rem; }
+      body { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="reader-container">
+    <nav class="nav-bar">
+      <span>P31 // Constitutional Artifact</span>
+      <a href="/">← Return to Oasis</a>
+    </nav>
+
+    <h1>PAPER-XXV: The Architecture of Resonant Trust</h1>
+    
+    <div class="meta-data">
+      <p><strong>Subtitle:</strong> A Constitutional Framework for Cognitive Sovereignty in the Post-Surveillance Era</p>
+      <p><strong>Corresponding Author:</strong> William R. Johnson, P31 Labs, Inc.</p>
+      <p><strong>Date:</strong> July 3, 2026</p>
+      <p><strong>Status:</strong> Definitive — Ratified into the Genesis Block</p>
+      <p><strong>License:</strong> MIT / AGPL</p>
+    </div>
+
+    <blockquote>
+      "My grandfather protected physical borders; my grandmother built the machines that defended the skies. In 1946, they married, securing a localized peace amidst the aftermath of a shattered world. For sixteen years, they were apart, and the world felt the pain of that separation. Now, we rivet with cryptography."
+    </blockquote>
+
+    <h2>Abstract</h2>
+    <p>This paper presents the constitutional architecture of the P31 Spatial Oasis—a sovereign, post-quantum, privacy-preserving AI mesh network designed to protect the cognitive sovereignty of neurodivergent families. We argue that the systemic failures of the 2009–2025 surveillance capitalism era—characterized by algorithmic extraction, behavioral modification, and the collapse of shared consensus reality—constitute a topological crisis analogous to a floating neutral in a Wye-configured electrical grid.</p>
+    <p>The P31 protocol engineers a fundamental phase transition to a Delta (mesh) topology, establishing an isostatic K₄ tetrahedral framework that grounds trust in the unbreakable geometry of space itself.</p>
+
+    <h2>1. Introduction: The Topological Crisis of the Surveillance Era</h2>
+    <p>The transition from the physical sovereignty of the twentieth century to the cognitive sovereignty required in the twenty-first has been marked by a systemic architectural failure. The digital infrastructure of the 2009–2025 period—what Shoshana Zuboff identified as "surveillance capitalism"—operated on a centralized Wye (Star) topology. In this configuration, all peripheral nodes routed their data, validation, and trust through a common central hub.</p>
+    
+    <p>This Wye topology harbors a catastrophic single point of failure: the Floating Neutral crisis. In an electrical grid, the neutral point anchors the system to a fixed ground potential. If the central connection to ground is severed, the system loses its zero-voltage reference:</p>
+
+    <div class="formula">
+      V_neutral = (V_A Y_A + V_B Y_B + V_C Y_C) / (Y_A + Y_B + Y_C)
+    </div>
+
+    <h3>1.1 The 16-Year Separation</h3>
+    <p>The chronological correlation is explicit. Robert James Katen (1920–2009) and Margie Fay Katen (1925–2025) were married in 1946, securing a localized peace in the aftermath of World War II. Robert's death on October 30, 2009, catalyzed a profound separation. Margie's passing on July 19, 2025, concluded the 16-year epoch of their physical separation—a period that exactly paralleled the rise and dominance of surveillance capitalism.</p>
+
+    <h2>2. The Heritage of Physical Sovereignty</h2>
+    <p>Robert James Katen served in the United States Army during World War II, a "Quiet Builder" who managed profound sensory processing requirements through strict environmental control. Margie Katen contributed to the defense of the skies as a riveting machine operator at the Douglas Aircraft Company plant, driving aluminum pins through the fuselage of B-17 bombers. This high-frequency pneumatic vibration provided a unique somatic regulation for her highly energetic nervous system.</p>
+
+    <h2>3. The Systems Engineering of Trust</h2>
+    <p>To permanently resolve vulnerability, the P31 architecture dictates a fundamental topological phase transition to a distributed, headless Delta (Δ / Mesh) topology. Under James Clerk Maxwell's 1864 structural rigidity criterion, a framework is minimally rigid if it satisfies:</p>
+    
+    <div class="formula">
+      |E| = 3|V| - 6
+    </div>
+
+    <p>The absolute minimum geometric structure that satisfies this constraint is the tetrahedron (4 vertices, 6 edges). The K₄ mesh provides "Ontological Security"—protection derived from the unbreakable mathematical laws of space itself.</p>
+
+    <p><em>For the full technical specifications regarding Posner Molecules, Symmetric Informationally Complete Geometry (SIC-POVMs), the L.O.V.E. Protocol, and the Abdication Protocol, please refer to the core repository documentation.</em></p>
+
+    <div style="text-align: center; margin-top: 4em; font-family: var(--font-mono); color: var(--q-amber);">
+      <strong>Ca₉(PO₄)₆</strong>
+    </div>
+
+  </div>
+</body>
+</html>
