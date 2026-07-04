@@ -1,358 +1,162 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-spoons="5">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>P31 // CLI — Sovereign AI for Neurodivergent Families</title>
-  <meta name="description" content="CLI-native AI agent. Post-quantum. Spoon-aware. Edge-deployed. Open source MIT." />
+  <title>P31 // Spatial Oasis</title>
+  <meta name="description" content="Sovereign AI for Neurodivergent Families. Post-quantum. Spoon-aware. Edge-deployed." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet" />
-
-  <!-- Xterm.js for Live Terminal Streaming -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.5.0/css/xterm.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/xterm@5.5.0/lib/xterm.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xterm-addon-web-links@0.9.0/lib/xterm-addon-web-links.min.js"></script>
-
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ─── NEURO-ADAPTIVE TOKENS ─── */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     :root {
-      /* Core Palette */
       --bg-void: #030305;
       --quantum-cyan: #00f0ff;
       --quantum-violet: #b53cff;
       --quantum-gold: #ffd700;
-      --quantum-green: #00ff66;
-      --quantum-red: #ff003c;
       --text-bright: #ffffff;
       --text-muted: #8b9bb4;
       --text-dim: #4a5b78;
+      --glass-bg: rgba(10, 12, 28, 0.35);
+      --glass-border: rgba(0, 240, 255, 0.15);
       --radius-lg: 12px;
       --radius-sm: 6px;
       --font-mono: 'JetBrains Mono', monospace;
-      
-      /* Dynamic properties (transitioned) */
-      --glow-intensity: 1;
-      --anim-speed: 20s;
-      --glass-bg: rgba(10, 12, 28, 0.35);
-      --glass-border: rgba(0, 240, 255, 0.2);
-      --particle-opacity: 0.8;
-      --blur-intensity: 16px;
-      --saturation-boost: 1.4;
-      --core-speed: 10s;
-      --unicorn-float: 6s;
-      --rainbow-opacity: 0.15;
+      --font-sans: 'Inter', sans-serif;
     }
-
-    /* Spoon Level 5 (High Energy) */
-    body[data-spoons="5"] {
-      --glow-intensity: 1;
-      --anim-speed: 20s;
-      --glass-bg: rgba(10, 12, 28, 0.35);
-      --glass-border: rgba(0, 240, 255, 0.2);
-      --particle-opacity: 0.8;
-      --blur-intensity: 16px;
-      --saturation-boost: 1.4;
-      --core-speed: 8s;
-      --unicorn-float: 4s;
-      --rainbow-opacity: 0.25;
-    }
-
-    /* Spoon Level 3 (Medium Energy) */
-    body[data-spoons="3"] {
-      --glow-intensity: 0.4;
-      --anim-speed: 40s;
-      --glass-bg: rgba(10, 12, 28, 0.55);
-      --glass-border: rgba(0, 240, 255, 0.08);
-      --particle-opacity: 0.3;
-      --blur-intensity: 12px;
-      --saturation-boost: 1.0;
-      --core-speed: 20s;
-      --unicorn-float: 8s;
-      --rainbow-opacity: 0.1;
-    }
-
-    /* Spoon Level 1 (Low Energy) */
-    body[data-spoons="1"] {
-      --glow-intensity: 0;
-      --anim-speed: 99999s;
-      --glass-bg: rgba(5, 5, 8, 0.95);
-      --glass-border: rgba(139, 155, 180, 0.3);
-      --particle-opacity: 0;
-      --blur-intensity: 4px;
-      --saturation-boost: 0.8;
-      --quantum-cyan: #5cc2c9;
-      --quantum-violet: #9b72cf;
-      --quantum-gold: #c8a050;
-      --core-speed: 99999s;
-      --unicorn-float: 99999s;
-      --rainbow-opacity: 0;
-    }
-
-    /* ─── GLOBAL ─── */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
-      background-color: var(--bg-void);
+      background: var(--bg-void);
       color: var(--text-bright);
-      font-family: var(--font-mono);
+      font-family: var(--font-sans);
       -webkit-font-smoothing: antialiased;
-      height: 100vh;
-      width: 100vw;
-      overflow: hidden;
-      font-size: 14px;
-      position: relative;
-      transition: background-color 0.8s ease, --quantum-cyan 0.8s ease;
+      min-height: 100vh;
+      overflow-x: hidden;
     }
-
-    /* ─── SPATIAL GRID ─── */
-    .spatial-grid {
-      position: absolute;
-      inset: -50%;
-      background-image: 
-        radial-gradient(circle at 50% 50%, rgba(181, 60, 255, calc(0.15 * var(--glow-intensity))) 0%, transparent 40%),
-        linear-gradient(rgba(0, 240, 255, calc(0.04 * var(--glow-intensity))) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(0, 240, 255, calc(0.04 * var(--glow-intensity))) 1px, transparent 1px);
-      background-size: 100% 100%, 60px 60px, 60px 60px;
-      background-position: center center;
-      z-index: 0;
-      animation: gridShift var(--anim-speed) linear infinite;
-      pointer-events: none;
-      transition: opacity 0.8s ease;
-      will-change: transform;
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 40px 24px 80px;
     }
-
-    @keyframes gridShift {
-      0% { transform: translateY(0) translateZ(0); }
-      100% { transform: translateY(60px) translateZ(0); }
-    }
-
-    /* ─── GLASSMORPHISM 2.0 ─── */
-    .glass-panel {
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--blur-intensity)) saturate(var(--saturation-boost));
-      -webkit-backdrop-filter: blur(var(--blur-intensity)) saturate(var(--saturation-boost));
-      border: 1px solid var(--glass-border);
-      border-radius: var(--radius-lg);
-      box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.6),
-        inset 0 0 40px rgba(0, 240, 255, calc(0.03 * var(--glow-intensity))),
-        0 0 20px rgba(181, 60, 255, calc(0.08 * var(--glow-intensity)));
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      transform: translateZ(0); /* Hardware acceleration */
-    }
-
-    /* ─── PARTICLES ─── */
-    #particles {
-      position: absolute;
-      inset: 0;
-      z-index: 1;
-      opacity: var(--particle-opacity);
-      transition: opacity 0.8s ease;
-      pointer-events: none;
-      width: 100%;
-      height: 100%;
-      will-change: opacity;
-    }
-
-    /* ─── APP CONTAINER ─── */
-    .app-container {
-      position: relative;
-      z-index: 10;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-      padding: 24px;
-    }
-
-    /* ─── NEURO-ADAPTIVE CONTROLS ─── */
-    .spoon-controls {
-      position: fixed;
-      top: 24px;
-      right: 24px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      z-index: 100;
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      padding: 8px 16px 8px 12px;
-      border-radius: 30px;
-      border: 1px solid var(--glass-border);
-      box-shadow: 0 4px 20px rgba(0,0,0,0.3);
-      transition: all 0.8s ease;
-      flex-wrap: nowrap;
-    }
-    .spoon-label {
-      font-size: 10px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-right: 4px;
-      white-space: nowrap;
-    }
-    .spoon-btn {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--glass-border);
-      color: var(--text-muted);
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
+    .hero { text-align: center; padding: 60px 0 40px; }
+    .brand {
       font-family: var(--font-mono);
       font-size: 12px;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    .spoon-btn:hover, .spoon-btn:focus-visible { background: rgba(255,255,255,0.1); outline: none; }
-    .spoon-btn.active {
-      background: rgba(0, 240, 255, calc(0.2 * var(--glow-intensity) + 0.1));
-      color: var(--text-bright);
-      border-color: var(--quantum-cyan);
-      box-shadow: 0 0 10px rgba(0, 240, 255, calc(0.5 * var(--glow-intensity)));
-    }
-    .spoon-btn.active[data-spoon="1"] { border-color: var(--text-muted); box-shadow: none; }
-
-    .divider {
-      width: 1px;
-      height: 24px;
-      background: var(--glass-border);
-      margin: 0 4px;
-    }
-
-    .audio-toggle, .bionic-toggle, .focus-toggle {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid var(--glass-border);
       color: var(--text-muted);
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      cursor: pointer;
-      transition: all 0.3s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      padding: 0;
-    }
-    .audio-toggle:hover, .bionic-toggle:hover, .focus-toggle:hover { background: rgba(255,255,255,0.1); }
-    .bionic-toggle.active, .focus-toggle.active {
-      background: rgba(0, 240, 255, calc(0.15 * var(--glow-intensity) + 0.1));
-      border-color: var(--quantum-cyan);
-      color: var(--text-bright);
-    }
-
-    /* ─── THE K4 CORE (THE FACE) ─── */
-    .mesh-core-container {
-      margin-bottom: -16px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      filter: drop-shadow(0 0 15px rgba(0, 240, 255, calc(0.3 * var(--glow-intensity))));
-      transition: filter 0.8s ease;
-    }
-    .k4-mesh {
-      width: 140px;
-      height: 140px;
-      animation: rotateCore var(--core-speed) linear infinite;
-      transform-origin: center center;
-    }
-    .k4-glow {
-      fill: var(--quantum-cyan);
-      filter: blur(16px);
-      opacity: calc(0.4 * var(--glow-intensity));
-      animation: breatheCore 4s ease-in-out infinite alternate;
-      transition: all 0.8s ease;
-    }
-    .k4-node {
-      fill: var(--text-bright);
-      transition: fill 0.8s ease;
-    }
-    .k4-edge {
-      stroke: var(--quantum-violet);
-      stroke-width: 1.5;
-      opacity: calc(0.4 + (0.4 * var(--glow-intensity)));
-      transition: all 0.8s ease;
-    }
-    
-    @keyframes rotateCore {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.05); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    @keyframes breatheCore {
-      0% { opacity: calc(0.2 * var(--glow-intensity)); transform: scale(0.9); }
-      100% { opacity: calc(0.6 * var(--glow-intensity)); transform: scale(1.1); }
-    }
-
-    /* ─── LANDING ─── */
-    .landing {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      gap: 24px;
-      transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1), transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-    }
-    .landing.hidden {
-      opacity: 0;
-      transform: scale(0.92) translateY(-20px);
-      pointer-events: none;
-      position: absolute;
-    }
-
-    .brand {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--quantum-cyan);
-      letter-spacing: 4px;
+      letter-spacing: 3px;
       text-transform: uppercase;
-      text-shadow: 0 0 10px rgba(0, 240, 255, calc(0.6 * var(--glow-intensity)));
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.8s ease;
+      margin-bottom: 20px;
     }
-    .brand::before, .brand::after {
-      content: '';
-      height: 1px;
-      width: 40px;
-      background: linear-gradient(90deg, transparent, var(--quantum-cyan), transparent);
-      opacity: calc(0.5 + (0.5 * var(--glow-intensity)));
-    }
-
-    .logo {
-      font-size: 48px;
+    .brand span { color: var(--quantum-cyan); }
+    .hero h1 {
+      font-size: clamp(36px, 6vw, 64px);
       font-weight: 800;
       line-height: 1.1;
-      text-align: center;
-      letter-spacing: -2px;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
     }
-    .gradient-text {
-      background: linear-gradient(135deg, var(--text-bright) 0%, var(--quantum-cyan) 100%);
-      background-size: 200% auto;
+    .hero h1 .gradient {
+      background: linear-gradient(135deg, var(--text-bright), var(--quantum-cyan));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      animation: nebulaFlow 6s ease-in-out infinite alternate;
     }
-    .violet-glow {
-      background: linear-gradient(135deg, var(--quantum-violet) 0%, #ff66ff 100%);
+    .hero h1 .violet {
+      background: linear-gradient(135deg, var(--quantum-violet), #ff88ff);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      text-shadow: 0 0 30px rgba(181, 60, 255, calc(0.4 * var(--glow-intensity)));
-      transition: text-shadow 0.8s ease;
     }
-
-    @keyframes nebulaFlow {
-      0% { background-position: 0% 50%; }
-      100% { background-position: 100% 50%; }
+    .hero p {
+      font-size: 18px;
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto 32px;
+      line-height: 1.6;
     }
-
-    /* ─── SOVEREIGN TREASURY (DONATE BAR) ─── */
+    .cta-row {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .btn {
+      padding: 14px 32px;
+      border-radius: var(--radius-sm);
+      font-family: var(--font-mono);
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-primary {
+      background: rgba(181, 60, 255, 0.12);
+      color: var(--text-bright);
+      border: 1px solid var(--quantum-violet);
+      box-shadow: 0 0 20px rgba(181, 60, 255, 0.25);
+    }
+    .btn-primary:hover {
+      background: rgba(181, 60, 255, 0.28);
+      box-shadow: 0 0 35px rgba(181, 60, 255, 0.5);
+      transform: translateY(-2px);
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.04);
+      color: var(--text-muted);
+      border: 1px solid var(--glass-border);
+    }
+    .btn-secondary:hover {
+      color: var(--quantum-cyan);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+    .btn-gold {
+      background: rgba(255, 215, 0, 0.1);
+      color: var(--quantum-gold);
+      border: 1px solid rgba(255, 215, 0, 0.3);
+    }
+    .btn-gold:hover {
+      background: rgba(255, 215, 0, 0.2);
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);
+      transform: translateY(-2px);
+    }
+    .k4-container {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0 32px;
+    }
+    .k4-mesh {
+      width: 120px;
+      height: 120px;
+      animation: rotate 20s linear infinite;
+    }
+    @keyframes rotate { 0% { transform: rotate(0); } 100% { transform: rotate(360deg); } }
+    .k4-edge { stroke: rgba(0, 240, 255, 0.2); stroke-width: 1.5; }
+    .k4-node { fill: var(--quantum-cyan); }
+    .k4-center { fill: var(--quantum-violet); filter: drop-shadow(0 0 12px var(--quantum-violet)); }
+    .stats {
+      display: flex;
+      gap: 32px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin: 40px 0 32px;
+    }
+    .stat { text-align: center; }
+    .stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      font-family: var(--font-mono);
+      color: var(--quantum-cyan);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+    }
     .donate-bar {
       display: flex;
       gap: 16px;
@@ -363,1755 +167,191 @@
       border: 1px solid var(--glass-border);
       padding: 10px 24px;
       border-radius: 30px;
-      margin-bottom: 24px;
+      margin: 24px auto 40px;
       font-size: 12px;
-      transition: all 0.3s ease;
-    }
-    .donate-bar:hover {
-      border-color: rgba(0, 240, 255, 0.3);
-      box-shadow: 0 0 20px rgba(0, 240, 255, 0.05);
+      max-width: 500px;
     }
     .donate-link {
       color: var(--text-muted);
       text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: all 0.2s;
+      transition: color 0.2s;
     }
     .donate-link:hover { color: var(--text-bright); }
-    .donate-link.kofi:hover { color: var(--quantum-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, 0.4); }
-    .donate-link.github:hover { color: var(--quantum-violet); text-shadow: 0 0 8px rgba(181, 60, 255, 0.4); }
-    .donate-link.crypto {
-      opacity: 1;
-      cursor: pointer;
-      position: relative;
-    }
-    .donate-link.crypto:hover {
-      color: var(--quantum-gold);
-      text-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
-    }
-    .donate-link.crypto:hover::after {
-      content: 'Send ETH/ERC-20 to classicwilly.eth on Base';
-      position: absolute;
-      top: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: var(--bg-void);
-      border: 1px solid var(--glass-border);
-      padding: 4px 8px;
-      border-radius: 4px;
-      font-size: 9px;
-      white-space: nowrap;
-      color: var(--quantum-gold);
-    }
-    .donate-divider {
-      color: var(--text-dim);
-    }
-
-    /* ─── INSTALL COMMAND ─── */
+    .donate-link.kofi:hover { color: var(--quantum-cyan); }
+    .donate-link.github:hover { color: var(--quantum-violet); }
+    .donate-link.crypto { color: var(--quantum-gold); }
+    .donate-divider { color: var(--text-dim); }
     .install-cmd {
-      padding: 18px 32px;
-      font-size: 15px;
-      color: var(--quantum-cyan);
-      letter-spacing: 0.5px;
-      position: relative;
-      cursor: pointer;
-      margin-top: 8px;
-    }
-    .install-cmd:hover, .install-cmd:focus-visible {
-      border-color: rgba(0, 240, 255, 0.4);
-      outline: none;
-    }
-    .install-cmd::after {
-      content: 'COPY';
-      position: absolute;
-      right: 16px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 10px;
-      background: rgba(0, 240, 255, 0.1);
-      padding: 4px 8px;
-      border-radius: 4px;
-      border: 1px solid rgba(0, 240, 255, 0.3);
-      color: var(--text-bright);
-      opacity: 0;
-      transition: opacity 0.2s;
-    }
-    .install-cmd:hover::after, .install-cmd:focus-visible::after { opacity: 1; }
-
-    .toast {
-      position: fixed;
-      bottom: 40px;
-      left: 50%;
-      transform: translateX(-50%) translateY(20px);
-      background: var(--glass-bg);
-      backdrop-filter: blur(12px);
-      border: 1px solid var(--quantum-cyan);
-      padding: 12px 24px;
-      border-radius: var(--radius-sm);
-      color: var(--text-bright);
+      padding: 16px 28px;
       font-family: var(--font-mono);
       font-size: 13px;
-      box-shadow: 0 0 30px rgba(0, 240, 255, 0.2);
-      z-index: 200;
-      opacity: 0;
-      transition: opacity 0.3s ease, transform 0.3s ease;
-      pointer-events: none;
-    }
-    .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-    .btn {
-      padding: 12px 28px; border-radius: var(--radius-sm); font-family: var(--font-mono);
-      font-weight: 700; font-size: 13px; letter-spacing: 1.5px; text-transform: uppercase;
-      cursor: pointer; transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      text-decoration: none; display: inline-flex; align-items: center; gap: 8px;
-    }
-    .btn-primary {
-      background: rgba(181, 60, 255, 0.12); color: var(--text-bright); border: 1px solid var(--quantum-violet);
-      box-shadow: 0 0 20px rgba(181, 60, 255, calc(0.25 * var(--glow-intensity)));
-    }
-    .btn-primary:hover {
-      background: rgba(181, 60, 255, 0.28); box-shadow: 0 0 35px rgba(181, 60, 255, calc(0.5 * var(--glow-intensity)));
-      transform: translateY(-2px);
-    }
-    .btn-secondary {
-      background: rgba(255,255,255,0.04); color: var(--text-muted); border: 1px solid var(--glass-border);
-    }
-    .btn-secondary:hover {
-      color: var(--quantum-cyan); border-color: rgba(0, 240, 255, 0.4);
-      text-shadow: 0 0 8px rgba(0, 240, 255, calc(0.8 * var(--glow-intensity)));
-      transform: translateY(-2px);
-    }
-
-    /* ─── START BUTTON ─── */
-    .start-btn {
-      background: rgba(181, 60, 255, 0.1);
-      color: var(--text-bright);
-      border: 1px solid var(--quantum-violet);
-      padding: 16px 42px;
+      color: var(--quantum-cyan);
+      background: var(--glass-bg);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--glass-border);
       border-radius: var(--radius-sm);
       cursor: pointer;
-      font-family: var(--font-mono);
-      font-weight: 700;
-      font-size: 14px;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-      box-shadow: 0 0 15px rgba(181, 60, 255, calc(0.3 * var(--glow-intensity)));
-      position: relative;
+      max-width: 600px;
+      margin: 8px auto 32px;
+      text-align: center;
+      transition: border-color 0.3s;
+    }
+    .install-cmd:hover { border-color: rgba(0, 240, 255, 0.4); }
+    .genesis-mini {
+      background: var(--glass-bg);
+      border: 1px solid rgba(255, 215, 0, 0.2);
+      border-radius: var(--radius-lg);
+      padding: 24px 32px;
+      max-width: 500px;
+      margin: 32px auto;
+      text-align: center;
+    }
+    .genesis-mini .progress-track {
+      height: 4px;
+      background: rgba(255,255,255,0.06);
+      border-radius: 4px;
+      margin: 12px 0;
       overflow: hidden;
-      margin-top: 16px;
     }
-    .start-btn::before {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%; width: 50%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-      transform: skewX(-20deg);
-      transition: left 0.5s;
+    .genesis-mini .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--quantum-gold), var(--quantum-cyan));
+      transition: width 1s ease;
     }
-    .start-btn:hover, .start-btn:focus-visible {
-      background: rgba(181, 60, 255, 0.3);
-      box-shadow: 0 0 30px rgba(181, 60, 255, calc(0.6 * var(--glow-intensity)));
-      transform: translateY(-2px);
-      outline: none;
+    .genesis-mini .row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
     }
-    .start-btn:hover::before { left: 150%; }
-
-    /* ─── NAV ROW ─── */
     .nav-row {
       display: flex;
-      gap: 24px;
-      align-items: center;
-      font-size: 12px;
-      margin-top: 16px;
-      flex-wrap: wrap;
+      gap: 20px;
       justify-content: center;
+      flex-wrap: wrap;
+      font-size: 12px;
+      margin-top: 32px;
+      padding-top: 24px;
+      border-top: 1px solid var(--glass-border);
     }
     .nav-row a {
       color: var(--text-muted);
       text-decoration: none;
-      transition: all 0.2s;
-    }
-    .nav-row a:hover, .nav-row a:focus-visible { 
-      color: var(--quantum-cyan);
-      text-shadow: 0 0 8px rgba(0, 240, 255, calc(0.8 * var(--glow-intensity)));
-      outline: none;
-    }
-    .badge {
-      border: 1px solid var(--glass-border);
-      padding: 6px 14px;
-      border-radius: 20px;
-      color: var(--text-muted);
-      background: rgba(0, 240, 255, 0.03);
-      backdrop-filter: blur(4px);
-    }
-    .badge strong { 
-      color: var(--quantum-cyan); 
-      text-shadow: 0 0 5px rgba(0, 240, 255, calc(0.5 * var(--glow-intensity)));
-    }
-
-    /* ─── WORKSPACE (SPATIAL GRID) ─── */
-    .workspace {
-      display: none;
-      flex: 1;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-      height: 100%;
-      opacity: 0;
-      transform: scale(1.03) translateZ(0);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-      perspective: 1000px;
-    }
-    .workspace.active {
-      display: grid;
-      opacity: 1;
-      transform: scale(1) translateZ(0);
-    }
-
-    .stream-pane {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
-
-    .terminal-output {
-      flex: 1;
-      overflow-y: auto;
-      padding: 24px 32px;
-      font-size: 14px;
-      line-height: 1.8;
-      color: var(--text-bright);
-      scroll-behavior: smooth;
-    }
-    .terminal-output::-webkit-scrollbar { width: 6px; }
-    .terminal-output::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
-
-    .msg { margin-bottom: 10px; opacity: 0; animation: msgFadeIn 0.3s forwards; }
-    .msg.sys { color: var(--text-dim); }
-    .msg.thought { color: var(--quantum-violet); text-shadow: 0 0 8px rgba(181, 60, 255, calc(0.4 * var(--glow-intensity))); }
-    .msg.cyan { color: var(--quantum-cyan); text-shadow: 0 0 8px rgba(0, 240, 255, calc(0.4 * var(--glow-intensity))); }
-    .msg.success { color: var(--quantum-green); text-shadow: 0 0 8px rgba(0, 255, 102, calc(0.4 * var(--glow-intensity))); }
-
-    @keyframes msgFadeIn {
-      from { opacity: 0; transform: translateX(-10px); }
-      to { opacity: 1; transform: translateX(0); }
-    }
-
-    .input-bar {
-      margin: 24px;
-      padding: 20px 28px;
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      font-size: 15px;
-      border-left: 3px solid var(--quantum-cyan);
-      background: rgba(0,0,0,0.4);
-    }
-    .input-prefix {
-      color: var(--quantum-violet);
-      font-weight: 800;
-      text-shadow: 0 0 8px rgba(181, 60, 255, calc(0.6 * var(--glow-intensity)));
-    }
-    .cursor {
-      display: inline-block;
-      width: 10px; height: 18px;
-      background: var(--quantum-cyan);
-      box-shadow: 0 0 12px var(--quantum-cyan);
-      animation: blink 1s step-end infinite;
-      vertical-align: middle;
-      opacity: calc(0.2 + (0.8 * var(--glow-intensity)));
-    }
-    body[data-spoons="1"] .cursor { animation: none; opacity: 1; }
-
-    .metadata-pane {
-      padding: 28px;
-      display: flex;
-      flex-direction: column;
-      gap: 32px;
-      overflow-y: auto;
-    }
-    .meta-section h3 {
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      margin-bottom: 16px;
-      border-bottom: 1px solid rgba(255,255,255,0.05);
-      padding-bottom: 8px;
-    }
-    .meta-section p {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .pill {
-      display: inline-block;
-      background: rgba(0, 240, 255, 0.05);
-      border: 1px solid var(--glass-border);
-      border-radius: 4px;
-      padding: 4px 10px;
-      font-size: 11px;
-      color: var(--text-bright);
-    }
-    .pill.glow-cyan { box-shadow: 0 0 10px rgba(0, 240, 255, calc(0.2 * var(--glow-intensity))); border-color: rgba(0, 240, 255, 0.4); }
-    .pill.glow-violet { box-shadow: 0 0 10px rgba(181, 60, 255, calc(0.2 * var(--glow-intensity))); border-color: rgba(181, 60, 255, 0.4); }
-
-    .todo-item {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      transition: color 0.3s;
-    }
-    .todo-item.done { color: var(--text-bright); }
-    .todo-item.done span:first-child { 
-      color: var(--quantum-green);
-      text-shadow: 0 0 8px rgba(0, 255, 102, calc(0.6 * var(--glow-intensity)));
-    }
-    .todo-item.active span:first-child {
-      color: var(--quantum-cyan);
-      animation: pulsePulse 2s infinite;
-    }
-
-    @keyframes blink { 50% { opacity: 0; } }
-    @keyframes pulsePulse { 
-      0%, 100% { opacity: 1; text-shadow: 0 0 10px var(--quantum-cyan); }
-      50% { opacity: 0.4; text-shadow: none; }
-    }
-
-    @media (max-width: 900px) {
-      .workspace { grid-template-columns: 1fr; }
-      .metadata-pane { display: none; }
-      .spoon-controls { top: 16px; right: 16px; padding: 6px 12px; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
-      .spoon-label { font-size: 8px; }
-      .spoon-btn { width: 24px; height: 24px; font-size: 10px; }
-      .audio-toggle, .bionic-toggle, .focus-toggle { width: 24px; height: 24px; font-size: 10px; }
-      .divider { display: none; }
-      .logo { font-size: 32px; }
-    }
-
-    /* ─── WCAG 2.2: prefers-reduced-motion ─── */
-    @media (prefers-reduced-motion: reduce) {
-      :root { --anim-speed: 0s; --core-speed: 0s; --unicorn-float: 0s; }
-      .spatial-grid { animation: none; }
-      .k4-mesh { animation: none; }
-      .k4-glow { animation: none; }
-      .k4-node.shimmer { animation: none; }
-      .k4-edge.entangled { animation: none; stroke-dasharray: none; }
-      .unicorn-silhouette { animation: none; }
-      .rainbow-halo { animation: none; }
-      .flowchart-arrow { animation: none; }
-      #particles { opacity: 0 !important; }
-      .msg { animation: none; opacity: 1; }
-      .cursor { animation: none; opacity: 1; }
-    }
-
-    /* ─── FORTUNE 1: Focus Mode ─── */
-    body.focus-mode .landing > * { opacity: 0.15; pointer-events: none; transition: opacity 0.4s; }
-    body.focus-mode .landing > .cta-row { opacity: 1; pointer-events: auto; }
-    body.focus-mode .landing > .install-cmd { opacity: 1; pointer-events: auto; }
-    body.focus-mode .spoon-controls { opacity: 0; pointer-events: none; }
-    body.focus-mode .workspace .metadata-pane { display: none; }
-    body.focus-mode .workspace .stream-header { display: none; }
-
-    /* ─── BIONIC READING ─── */
-    body.bionic-reading .hero-sub b {
-      font-weight: 800;
-      color: var(--quantum-cyan);
-    }
-
-    /* ─── FACE UPGRADE: Rainbow Halo ─── */
-    .mesh-core-container {
-      margin-bottom: -8px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      filter: drop-shadow(0 0 20px rgba(0, 240, 255, calc(0.35 * var(--glow-intensity))));
-      transition: filter 0.8s ease;
-      position: relative;
-    }
-    .rainbow-halo {
-      position: absolute;
-      inset: -40px;
-      border-radius: 50%;
-      background: conic-gradient(
-        from 0deg,
-        #ff6b6b, #feca57, #48dbfb, #a29bfe, #fd79a8, #ff6b6b
-      );
-      opacity: var(--rainbow-opacity);
-      filter: blur(30px);
-      animation: haloSpin 12s linear infinite;
-      pointer-events: none;
-      mix-blend-mode: screen;
-    }
-    @keyframes haloSpin {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.1); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-
-    /* ─── FACE UPGRADE: K4 Mesh Enhancements ─── */
-    .k4-mesh {
-      width: 140px;
-      height: 140px;
-      animation: rotateCore var(--core-speed) linear infinite;
-      transform-origin: center center;
-      position: relative;
-      z-index: 2;
-    }
-    .k4-glow {
-      fill: var(--quantum-cyan);
-      filter: blur(14px);
-      opacity: calc(0.5 * var(--glow-intensity));
-      animation: breatheCore 4s ease-in-out infinite alternate;
-      transition: all 0.8s ease;
-    }
-    .k4-node {
-      fill: var(--text-bright);
-      transition: fill 0.8s ease;
-    }
-    .k4-node.shimmer {
-      animation: shimmerNode 3s ease-in-out infinite alternate;
-    }
-    @keyframes shimmerNode {
-      0% { fill: var(--quantum-cyan); }
-      50% { fill: var(--quantum-violet); }
-      100% { fill: var(--quantum-cyan); }
-    }
-    .k4-edge {
-      stroke: var(--quantum-violet);
-      stroke-width: 1.5;
-      opacity: calc(0.5 + (0.3 * var(--glow-intensity)));
-      transition: all 0.8s ease;
-    }
-    .k4-edge.entangled {
-      stroke: url(#edgeGradient);
-      stroke-dasharray: 8 4;
-      animation: edgePulse 4s ease-in-out infinite;
-    }
-    @keyframes edgePulse {
-      0% { stroke-dashoffset: 0; opacity: 0.4; }
-      50% { stroke-dashoffset: 12; opacity: 1; }
-      100% { stroke-dashoffset: 24; opacity: 0.4; }
-    }
-    @keyframes rotateCore {
-      0% { transform: rotate(0deg) scale(1); }
-      50% { transform: rotate(180deg) scale(1.08); }
-      100% { transform: rotate(360deg) scale(1); }
-    }
-    @keyframes breatheCore {
-      0% { opacity: calc(0.3 * var(--glow-intensity)); transform: scale(0.9); }
-      100% { opacity: calc(0.7 * var(--glow-intensity)); transform: scale(1.15); }
-    }
-
-    /* ─── FACE UPGRADE: Unicorn Spark ─── */
-    .unicorn-silhouette {
-      animation: unicornDrift var(--unicorn-float) ease-in-out infinite alternate;
-      transform-origin: center;
-      filter: drop-shadow(0 0 12px rgba(255, 215, 0, calc(0.3 * var(--glow-intensity))));
-    }
-    @keyframes unicornDrift {
-      0% { transform: translateY(-2px) rotate(-2deg); }
-      100% { transform: translateY(4px) rotate(2deg); }
-    }
-    .unicorn-path {
-      fill: var(--quantum-gold);
-      opacity: calc(0.7 + 0.3 * var(--glow-intensity));
-      transition: fill 0.8s ease;
-    }
-
-    /* ─── FACE UPGRADE: Mermaid Flowchart Overlay ─── */
-    .flowchart-overlay {
-      position: absolute;
-      bottom: -60px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 200px;
-      z-index: 3;
-      opacity: calc(0.4 + 0.4 * var(--glow-intensity));
-      transition: opacity 0.8s ease;
-      pointer-events: none;
-    }
-    .flowchart-node {
-      fill: var(--glass-bg);
-      stroke: var(--quantum-cyan);
-      stroke-width: 1;
-      rx: 4;
-    }
-    .flowchart-text {
-      fill: var(--text-bright);
-      font-size: 6px;
-      font-family: var(--font-mono);
-      text-anchor: middle;
-      dominant-baseline: central;
-    }
-    .flowchart-arrow {
-      stroke: var(--quantum-violet);
-      stroke-width: 0.8;
-      stroke-dasharray: 3 2;
-      animation: arrowFlow 2s linear infinite;
-    }
-    @keyframes arrowFlow {
-      0% { stroke-dashoffset: 0; }
-      100% { stroke-dashoffset: -5; }
-    }
-
-    /* ─── GENESIS SPARK: Live Interactive CTA ─── */
-    .genesis-spark {
-      position: relative;
-      margin: 16px auto 8px;
-      padding: 20px 28px;
-      border-radius: var(--radius-lg);
-      background: var(--glass-bg);
-      backdrop-filter: blur(var(--blur-intensity));
-      border: 1px solid var(--glass-border);
-      max-width: 640px;
-      width: 100%;
-      transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1);
-      overflow: hidden;
-      z-index: 5;
-    }
-    .genesis-spark::before {
-      content: '';
-      position: absolute;
-      inset: -1px;
-      border-radius: var(--radius-lg);
-      background: linear-gradient(135deg, var(--quantum-cyan), var(--quantum-violet), var(--quantum-gold));
-      opacity: 0;
-      z-index: -1;
-      transition: opacity 0.8s ease;
-      animation: borderBreathe 3s ease-in-out infinite;
-    }
-    .genesis-spark.ready::before { opacity: 0.4; }
-    .genesis-spark.liftoff::before { opacity: 0.8; animation-duration: 0.5s; }
-    @keyframes borderBreathe {
-      0%, 100% { opacity: 0; }
-      50% { opacity: 0.6; }
-    }
-    .genesis-spark.liftoff::before { opacity: 1; animation: none; }
-    .genesis-spark.liftoff { border-color: transparent; }
-    .genesis-spark.ready { cursor: pointer; }
-    .genesis-spark.ready:hover { transform: scale(1.02); }
-    .genesis-spark-header {
-      display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
-    }
-    .spark-icon {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--quantum-gold), var(--quantum-cyan));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 14px; animation: sparkPulse 2s ease-in-out infinite;
-      flex-shrink: 0;
-    }
-    .genesis-spark.liftoff .spark-icon { animation: sparkRapid 0.3s ease-in-out infinite; }
-    @keyframes sparkPulse {
-      0%, 100% { box-shadow: 0 0 8px rgba(255,215,0,0.4); transform: scale(1); }
-      50% { box-shadow: 0 0 20px rgba(255,215,0,0.8); transform: scale(1.1); }
-    }
-    @keyframes sparkRapid {
-      0%, 100% { box-shadow: 0 0 15px rgba(255,215,0,0.8); transform: scale(1); }
-      50% { box-shadow: 0 0 30px rgba(255,215,0,1); transform: scale(1.2); }
-    }
-    .spark-title {
-      font-size: 13px; font-weight: 700; color: var(--text-bright);
-      letter-spacing: 1px;
-    }
-    .spark-title .highlight { color: var(--quantum-gold); }
-    .spark-title.ready-text .highlight { color: var(--quantum-cyan); animation: textPulse 1s ease-in-out infinite; }
-    @keyframes textPulse {
-      0%, 100% { text-shadow: 0 0 8px var(--quantum-cyan); }
-      50% { text-shadow: 0 0 20px var(--quantum-cyan); }
-    }
-    .spark-status {
-      margin-left: auto; font-size: 10px; text-transform: uppercase;
-      letter-spacing: 1px; color: var(--text-muted);
-    }
-    .genesis-spark.ready .spark-status { color: var(--quantum-cyan); }
-    .genesis-spark.liftoff .spark-status { color: var(--quantum-gold); animation: textPulse 0.5s ease-in-out infinite; }
-    .spark-progress-track {
-      width: 100%; height: 4px; background: rgba(255,255,255,0.06);
-      border-radius: 4px; overflow: hidden; margin-bottom: 8px;
-      position: relative;
-    }
-    .spark-progress-fill {
-      height: 100%; width: 0%;
-      border-radius: 4px;
-      background: linear-gradient(90deg, var(--quantum-gold), var(--quantum-cyan), var(--quantum-violet));
-      transition: width 1s cubic-bezier(0.16, 1, 0.3, 1);
-      position: relative;
-    }
-    .spark-progress-fill::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: shimmerScan 2s ease-in-out infinite;
-    }
-    @keyframes shimmerScan {
-      0% { transform: translateX(-100%); }
-      100% { transform: translateX(100%); }
-    }
-    .genesis-spark.liftoff .spark-progress-fill { width: 100% !important; }
-    .spark-details {
-      display: flex; justify-content: space-between; align-items: center;
-      font-size: 11px; color: var(--text-muted);
-    }
-    .spark-threshold {
-      display: flex; align-items: center; gap: 6px;
-    }
-    .spark-threshold .value { color: var(--text-bright); font-weight: 700; }
-    .spark-threshold .value.done { color: var(--quantum-green); }
-    .spark-watchers {
-      display: flex; align-items: center; gap: 4px;
-    }
-    .spark-watchers .count { color: var(--quantum-cyan); }
-    .spark-ignite-btn {
-      display: none; margin-top: 10px; width: 100%;
-      padding: 14px 20px; border: none; border-radius: var(--radius-sm);
-      font-family: var(--font-mono); font-size: 16px; font-weight: 800;
-      letter-spacing: 2px; text-transform: uppercase;
-      cursor: pointer; transition: all 0.3s;
-      background: linear-gradient(135deg, var(--quantum-gold), var(--quantum-cyan));
-      color: var(--bg-void); box-shadow: 0 0 30px rgba(255,215,0,0.5);
-      animation: ignitePulse 1s ease-in-out infinite;
-      position: relative; overflow: hidden;
-    }
-    .genesis-spark.ready .spark-ignite-btn { display: block; }
-    .spark-ignite-btn:hover { transform: scale(1.03); box-shadow: 0 0 50px rgba(255,215,0,0.8); }
-    .spark-ignite-btn:active { transform: scale(0.98); }
-    @keyframes ignitePulse {
-      0%, 100% { box-shadow: 0 0 20px rgba(255,215,0,0.4); }
-      50% { box-shadow: 0 0 40px rgba(255,215,0,0.8); }
-    }
-    .spark-ignite-btn::after {
-      content: '';
-      position: absolute; inset: 0;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-      animation: shimmerScan 1.5s ease-in-out infinite;
-    }
-    .genesis-spark.liftoff .spark-ignite-btn { display: none; }
-    .spark-celebrate-text {
-      display: none; margin-top: 10px;
-      font-size: 12px; color: var(--quantum-gold); text-align: center;
-      animation: textPulse 0.5s ease-in-out infinite;
-    }
-    .genesis-spark.liftoff .spark-celebrate-text { display: block; }
-    .spark-be-first {
-      display: none; margin-top: 6px;
-      font-size: 11px; color: var(--text-muted); text-align: center;
-      padding: 8px; border-radius: var(--radius-sm);
-      background: rgba(255,215,0,0.05); border: 1px solid rgba(255,215,0,0.2);
-    }
-    .spark-be-first .address { color: var(--quantum-gold); font-weight: 700; }
-
-    /* ─── GENESIS SPARK: Fireworks Canvas Overlay ─── */
-    #fireworks-canvas {
-      position: fixed; inset: 0; z-index: 999;
-      pointer-events: none; opacity: 0;
-      transition: opacity 0.3s ease;
-      width: 100%; height: 100%;
-    }
-    #fireworks-canvas.active { opacity: 1; pointer-events: auto; }
-    #fireworks-canvas.celebration { pointer-events: none; }
-
-    /* ─── GENESIS SPARK: celebration replay button ─── */
-    .spark-replay {
-      display: none; margin-top: 8px;
-      text-align: center; font-size: 11px; color: var(--text-muted);
-      cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
       transition: color 0.2s;
     }
-    .spark-replay:hover { color: var(--quantum-cyan); }
-    .genesis-spark.liftoff .spark-replay { display: block; }
-
-    /* Reduced motion: freeze fireworks */
-    @media (prefers-reduced-motion: reduce) {
-      #fireworks-canvas.active { opacity: 0 !important; }
-      .spark-ignite-btn { animation: none; }
-      .genesis-spark.ready::before { opacity: 0.2; animation: none; border: 1px solid var(--quantum-gold); }
+    .nav-row a:hover { color: var(--quantum-cyan); }
+    .badge {
+      border: 1px solid var(--glass-border);
+      padding: 4px 12px;
+      border-radius: 20px;
+      color: var(--text-muted);
+      font-size: 11px;
     }
-
-    /* ─── FORTUNE 1: Screen Reader Utilities ─── */
-    .sr-only {
-      position: absolute; width: 1px; height: 1px;
-      padding: 0; margin: -1px; overflow: hidden;
-      clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+    @media (max-width: 768px) {
+      .container { padding: 24px 16px 60px; }
+      .hero { padding: 20px 0; }
+      .stats { gap: 16px; }
+      .donate-bar { flex-wrap: wrap; }
     }
-
-    /* ─── LANDING SUBTITLE + STATS ─── */
-    .hero-sub {
-      font-size: 14px; color: var(--text-muted); line-height: 1.6;
-      max-width: 560px; text-align: center; margin: 0 auto;
-    }
-    .stats-strip {
-      display: flex; gap: 24px; flex-wrap: wrap; justify-content: center; margin: 8px 0 16px;
-    }
-    .stat { text-align: center; padding: 10px 18px; }
-    .stat-value {
-      font-size: 20px; font-weight: 800; color: var(--quantum-cyan);
-      text-shadow: 0 0 10px rgba(0,240,255,0.4); line-height: 1; margin-bottom: 4px;
-    }
-    .stat-value.violet { color: var(--quantum-violet); text-shadow: 0 0 10px rgba(181,60,255,0.4); }
-    .stat-value.green { color: var(--quantum-green); text-shadow: 0 0 10px rgba(0,255,102,0.4); }
-    .stat-label { font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1.5px; }
-    .cta-row { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-bottom: 16px; }
-
-    /* ─── FORTUNE 1: xterm.js stream header ─── */
-    .stream-header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 20px; border-bottom: 1px solid var(--glass-border);
-      background: rgba(0,0,0,0.25); font-size: 11px;
-    }
-    .live-badge {
-      display: flex; align-items: center; gap: 8px;
-      color: var(--quantum-red); font-weight: 800;
-      letter-spacing: 1px; text-shadow: 0 0 8px rgba(255,0,60,0.6);
-    }
-    .pulse {
-      width: 6px; height: 6px; background: var(--quantum-red);
-      border-radius: 50%; animation: livePulse 1.5s infinite;
-    }
-    @keyframes livePulse {
-      0% { box-shadow: 0 0 0 0 rgba(255,0,60,0.7); }
-      70% { box-shadow: 0 0 0 6px rgba(255,0,60,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,0,60,0); }
-    }
-    .stream-meta { color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
-    .stream-viewers {
-      display: flex; align-items: center; gap: 6px;
-      color: var(--quantum-cyan); font-size: 11px;
-    }
-    #term-out { flex: 1; padding: 12px; overflow: hidden; }
-    #term-out .xterm { padding: 4px 0; }
   </style>
 </head>
-<body data-spoons="5">
+<body>
+  <div class="container">
+    <div class="brand">P31 // <span>Spatial Oasis</span></div>
 
-<div class="spatial-grid"></div>
-<canvas id="particles" aria-hidden="true"></canvas>
-<canvas id="fireworks-canvas" aria-hidden="true"></canvas>
-
-<!-- Neuro-Adaptive Controls -->
-  <div class="spoon-controls" role="group" aria-label="Neuro-Adaptive Controls">
-    <span class="spoon-label">Spoons</span>
-    <button class="spoon-btn active" onclick="setSpoons(1)" data-spoon="1" aria-label="Spoon level 1" aria-pressed="false">1</button>
-    <button class="spoon-btn active" onclick="setSpoons(3)" data-spoon="3" aria-label="Spoon level 3" aria-pressed="false">3</button>
-    <button class="spoon-btn active" onclick="setSpoons(5)" data-spoon="5" aria-label="Spoon level 5" aria-pressed="true">5</button>
-    <div class="divider" aria-hidden="true"></div>
-    <button class="audio-toggle" id="audio-toggle" aria-label="Toggle ambient sound" title="Toggle sound">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" id="audio-icon">
-        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-        <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
-      </svg>
-    </button>
-    <button class="bionic-toggle" id="bionic-toggle" aria-label="Toggle Bionic Reading" title="Bionic Reading">📖</button>
-    <button class="focus-toggle" id="focus-toggle" aria-label="Toggle Focus Mode" title="Focus Mode">🎯</button>
-  </div>
-
-<!-- Screen Reader Live Region -->
-<div id="terminal-status" aria-live="polite" class="sr-only"></div>
-
-<!-- Toast Notification -->
-<div class="toast" id="toast" role="status" aria-live="polite">✓ Copied to clipboard</div>
-
-<main class="app-container">
-
-  <!-- Landing View -->
-  <div class="landing" id="landing" role="region" aria-label="Landing Page">
-    
-    <!-- THE K4 CORE (The Face of the UI) -->
-    <div class="mesh-core-container" aria-hidden="true">
-      <!-- Rainbow Halo -->
-      <div class="rainbow-halo"></div>
-
-      <!-- K4 Mesh with Quantum + Playful Personality -->
-      <svg class="k4-mesh" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-          <linearGradient id="edgeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stop-color="#b53cff" />
-            <stop offset="50%" stop-color="#00f0ff" />
-            <stop offset="100%" stop-color="#ffd700" />
-          </linearGradient>
-          <filter id="glowFilter">
-            <feGaussianBlur stdDeviation="3" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-        </defs>
-
-        <!-- Center glow -->
-        <circle cx="100" cy="115" r="30" class="k4-glow" />
-
-        <!-- Entanglement Edges (animated) -->
-        <line x1="100" y1="30" x2="170" y2="150" class="k4-edge entangled" />
-        <line x1="170" y1="150" x2="30" y2="150" class="k4-edge entangled" />
-        <line x1="30" y1="150" x2="100" y2="30" class="k4-edge entangled" />
-        <line x1="100" y1="30" x2="100" y2="115" class="k4-edge entangled" />
-        <line x1="170" y1="150" x2="100" y2="115" class="k4-edge entangled" />
-        <line x1="30" y1="150" x2="100" y2="115" class="k4-edge entangled" />
-
-        <!-- Outer Nodes (shimmer) -->
-        <circle cx="100" cy="30" r="6" class="k4-node shimmer" />
-        <circle cx="170" cy="150" r="6" class="k4-node shimmer" />
-        <circle cx="30" cy="150" r="6" class="k4-node shimmer" />
-
-        <!-- Center Node — Unicorn Spark (personality identity) -->
-        <g class="unicorn-silhouette" transform="translate(100, 115)">
-          <path class="unicorn-path" d="M -8,2 L -4,-4 L 0,-8 L 4,-4 L 8,2 L 6,6 L -6,6 Z" />
-          <path class="unicorn-path" d="M 0,-8 L 2,-14 L -2,-14 Z" />
-          <circle cx="2" cy="-2" r="1.5" fill="#ffffff" opacity="0.8" />
-          <path d="M -4,-4 Q -8,-6 -6,-2" stroke="#ff6b6b" stroke-width="1" fill="none" />
-          <path d="M -2,-6 Q -6,-8 -4,-4" stroke="#feca57" stroke-width="1" fill="none" />
-          <path d="M 0,-8 Q -4,-10 -2,-6" stroke="#48dbfb" stroke-width="1" fill="none" />
-        </g>
-      </svg>
-
-      <!-- Mermaid Flowchart Overlay (onboarding) -->
-      <svg class="flowchart-overlay" viewBox="0 0 200 60" xmlns="http://www.w3.org/2000/svg">
-        <line x1="30" y1="12" x2="70" y2="12" class="flowchart-arrow" />
-        <line x1="130" y1="12" x2="170" y2="12" class="flowchart-arrow" />
-        <rect x="0" y="4" width="30" height="16" class="flowchart-node" />
-        <text x="15" y="12" class="flowchart-text">Init</text>
-        <rect x="75" y="4" width="50" height="16" class="flowchart-node" />
-        <text x="100" y="12" class="flowchart-text">Configure</text>
-        <rect x="175" y="4" width="25" height="16" class="flowchart-node" />
-        <text x="187.5" y="12" class="flowchart-text">✨</text>
-        <text x="100" y="40" class="flowchart-text" fill="var(--text-muted)" font-size="5">⚡ 3-step convergence</text>
+    <div class="k4-container">
+      <svg class="k4-mesh" viewBox="0 0 100 100">
+        <line x1="50" y1="10" x2="90" y2="80" class="k4-edge" />
+        <line x1="90" y1="80" x2="10" y2="80" class="k4-edge" />
+        <line x1="10" y1="80" x2="50" y2="10" class="k4-edge" />
+        <line x1="50" y1="10" x2="50" y2="55" class="k4-edge" />
+        <line x1="90" y1="80" x2="50" y2="55" class="k4-edge" />
+        <line x1="10" y1="80" x2="50" y2="55" class="k4-edge" />
+        <circle cx="50" cy="10" r="3" class="k4-node" />
+        <circle cx="90" cy="80" r="3" class="k4-node" />
+        <circle cx="10" cy="80" r="3" class="k4-node" />
+        <circle cx="50" cy="55" r="4" class="k4-center" />
       </svg>
     </div>
 
-    <div class="brand" aria-label="P31 Spatial Oasis">P31 // SPATIAL OASIS</div>
-
-    <div class="logo">
-      <div class="gradient-text">Sovereign AI</div>
-      <div class="violet-glow">for Neurodivergent Families</div>
+    <div class="hero">
+      <h1>
+        <span class="gradient">Sovereign AI</span><br />
+        <span class="violet">for Neurodivergent Families</span>
+      </h1>
+      <p>CLI-native agent. Post-quantum mesh. Spoon-aware. Edge-deployed. No accounts. No tracking. No cloud dependency.</p>
+      <div class="cta-row">
+        <a href="/app.html" class="btn btn-primary">Launch OS →</a>
+        <a href="https://github.com/p31labs/p31-cli" target="_blank" class="btn btn-secondary">View on GitHub</a>
+        <a href="/docs/paper-xxv.html" class="btn btn-secondary">📄 Paper</a>
+      </div>
     </div>
 
-    <div class="hero-sub">CLI-native agent. Post-quantum mesh. Spoon-aware. Edge-deployed. <b>No accounts. No tracking. Works offline.</b></div>
+    <div class="install-cmd" onclick="copyInstallCmd()">$ curl -fsSL https://cli.p31ca.org/install | bash</div>
 
-    <div class="stats-strip">
+    <div class="stats">
       <div class="stat"><div class="stat-value">26</div><div class="stat-label">MCP Tools</div></div>
-      <div class="stat"><div class="stat-value green">413</div><div class="stat-label">Tests</div></div>
-      <div class="stat"><div class="stat-value violet">K₄</div><div class="stat-label">Topology</div></div>
-      <div class="stat"><div class="stat-value">0</div><div class="stat-label">Hallucinations</div></div>
+      <div class="stat"><div class="stat-value" style="color: var(--quantum-green);">413</div><div class="stat-label">Tests</div></div>
+      <div class="stat"><div class="stat-value" style="color: var(--quantum-violet);">K₄</div><div class="stat-label">Topology</div></div>
+      <div class="stat"><div class="stat-value" style="color: var(--quantum-gold);">0</div><div class="stat-label">Hallucinations</div></div>
     </div>
 
-    <div class="donate-bar" role="group" aria-label="Donation options">
-      <a href="https://ko-fi.com/trimtab69420" target="_blank" class="donate-link kofi" aria-label="Donate via Ko-fi">💛 Ko-fi</a>
-      <span class="donate-divider" aria-hidden="true">·</span>
-      <a href="https://github.com/sponsors/p31labs" target="_blank" class="donate-link github" aria-label="Sponsor via GitHub">💜 GitHub Sponsors</a>
-      <span class="donate-divider" aria-hidden="true">·</span>
-      <a href="https://etherscan.io/enslookup?q=classicwilly.eth" target="_blank" class="donate-link crypto" aria-label="Donate via ENS: classicwilly.eth">₿ classicwilly.eth</a>
-    </div>
-
-    <!-- Genesis Spark: Live Interactive CTA -->
-    <div class="genesis-spark" id="genesis-spark" role="region" aria-label="Genesis Gate ignition status">
-      <div class="genesis-spark-header">
-        <div class="spark-icon">✦</div>
-        <div class="spark-title">Genesis Gate — <span class="highlight">Awaiting Spark</span></div>
-        <div class="spark-status" id="spark-status">pending</div>
+    <div class="genesis-mini">
+      <div style="display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+        <span style="font-weight:600; color:var(--quantum-gold);">✦ Genesis Gate</span>
+        <span style="font-family:var(--font-mono); font-size:12px; color:var(--text-muted);">
+          <span id="mini-raised">0.000</span> / 0.01 Base ETH
+        </span>
       </div>
-      <div class="spark-progress-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-        <div class="spark-progress-fill" id="spark-progress-fill" style="width: 0%"></div>
-      </div>
-      <div class="spark-details">
-        <div class="spark-threshold">
-          <span>Raised</span>
-          <span class="value" id="spark-raised">0.000</span>
-          <span>/ 0.01 Base ETH</span>
-        </div>
-        <div class="spark-watchers">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          <span class="count" id="spark-watchers">142</span>
-          <span>watching</span>
-        </div>
-      </div>
-      <button class="spark-ignite-btn" id="spark-ignite-btn" onclick="GenesisSpark.ignite()">✦ IGNITE THE GENESIS GATE</button>
-      <div class="spark-celebrate-text" id="spark-celebrate-text">🔥 GENESIS SPARK IGNITED — QUANTUM FIREWORKS ACTIVE</div>
-      <div class="spark-be-first" id="spark-be-first">Be the first to fund <span class="address">classicwilly.eth</span> and claim <strong>✦ The Genesis Spark NFT</strong></div>
-      <div class="spark-replay" id="spark-replay" onclick="GenesisSpark.fireworksBurst()">↻ Replay fireworks</div>
+      <div class="progress-track"><div class="progress-fill" id="mini-fill" style="width:0%;"></div></div>
+      <div class="row"><span>Awaiting ignition</span><span>classicwilly.eth</span></div>
+      <a href="/app.html#genesis" class="btn btn-gold" style="margin-top:12px; width:100%; justify-content:center;">Ignite in OS →</a>
     </div>
 
-    <div class="cta-row">
-      <a href="/uplink" class="btn btn-primary">Initialize Uplink</a>
-      <a class="btn btn-secondary" href="/docs/paper-xxv.html" target="_blank" rel="noopener">📄 Read the Architecture</a>
-      <a class="btn btn-secondary" href="https://github.com/p31labs/p31-cli" target="_blank" rel="noopener">View on GitHub →</a>
-    </div>
-
-    <div class="install-cmd" onclick="copyInstallCmd()" role="button" tabindex="0" aria-label="Copy install command" onkeydown="if(event.key === 'Enter') copyInstallCmd()">
-      $ curl -fsSL https://cli.p31ca.org/install | bash
+    <div class="donate-bar">
+      <a href="https://ko-fi.com/trimtab69420" target="_blank" class="donate-link kofi">💛 Ko-fi</a>
+      <span class="donate-divider">·</span>
+      <a href="https://github.com/sponsors/p31labs" target="_blank" class="donate-link github">💜 GitHub Sponsors</a>
+      <span class="donate-divider">·</span>
+      <span class="donate-link crypto">₿ classicwilly.eth</span>
     </div>
 
     <div class="nav-row">
-      <a href="https://github.com/p31labs/p31-cli" target="_blank" aria-label="GitHub repository">GitHub</a>
-      <a href="docs/" aria-label="Documentation">Docs</a>
-      <a href="https://etherscan.io/enslookup?q=classicwilly.eth" target="_blank" rel="noopener" aria-label="ENS Identity">classicwilly.eth</a>
-      <span class="badge" role="status">Open Source <strong>MIT</strong></span>
-      <span class="badge" role="status"><strong>26</strong> MCP Tools</span>
-      <span class="badge" role="status"><strong>K₄</strong> Topology</span>
+      <a href="https://github.com/p31labs" target="_blank">GitHub</a>
+      <a href="/docs/">Docs</a>
+      <a href="/app.html">App</a>
+      <span class="badge">Open Source MIT</span>
+      <span class="badge">K₄ Topology</span>
     </div>
   </div>
 
-  <!-- Workspace View -->
-  <div class="workspace" id="workspace" role="application" aria-label="Spatial Workspace">
-    <div class="glass-panel stream-pane">
-      <div class="stream-header">
-        <div class="live-badge"><span class="pulse"></span> LIVE</div>
-        <div class="stream-meta">p31-agent-01 // primary-mesh</div>
-        <div class="stream-viewers">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
-          <span id="viewer-count">42</span>
-        </div>
-      </div>
-      <div id="term-out" role="application" aria-label="Interactive terminal"></div>
-    </div>
-
-    <aside class="glass-panel metadata-pane" role="complementary" aria-label="Workspace Metadata">
-      <div class="meta-section">
-        <h3>Telemetry</h3>
-        <p><span>Protocol</span> <span class="pill glow-cyan">Bubble Tea (v2)</span></p>
-        <p><span>Latency</span> <span style="color:var(--quantum-green)">12ms</span></p>
-        <p><span>Engines</span> <span><span class="pill">flash</span> <span class="pill">scavenger</span></span></p>
-      </div>
-      <div class="meta-section">
-        <h3>Cognitive State</h3>
-        <p><span>Spoons</span> <span class="pill glow-violet" id="state-spoons">● 5/5 High</span></p>
-        <p><span>Mesh Nodes</span> <span class="pill glow-cyan">● 4/4 Synced</span></p>
-      </div>
-      <div class="meta-section">
-        <h3>Task Vector</h3>
-        <div class="todo-item done"><span>✓</span><span>Establish P2P Tunnel</span></div>
-        <div class="todo-item done"><span>✓</span><span>Inject Quantum CSS</span></div>
-        <div class="todo-item active"><span>○</span><span>Deploy WebSockets</span></div>
-        <div class="todo-item"><span>○</span><span>Onboard Zero Node</span></div>
-      </div>
-    </aside>
-  </div>
-
-</main>
-
-<script>
-  'use strict';
-
-  // ════════════════════════════════════════════════════════════════════
-  //  AUDIO ENGINE (Ambient Soundscape)
-  // ════════════════════════════════════════════════════════════════════
-  const AudioEngine = {
-    ctx: null, osc: null, gain: null,
-    isMuted: localStorage.getItem('p31-sound-muted') === 'true',
-    init() {
-      if (this.ctx) return;
+  <script>
+    async function updateGenesis() {
       try {
-        const AudioContext = window.AudioContext || window.webkitAudioContext;
-        if (!AudioContext) return;
-        this.ctx = new AudioContext();
-        this.osc = this.ctx.createOscillator();
-        this.gain = this.ctx.createGain();
-        this.osc.type = 'sine';
-        this.gain.gain.value = this.isMuted ? 0 : 0.03;
-        this.osc.frequency.value = 60;
-        this.osc.connect(this.gain);
-        this.gain.connect(this.ctx.destination);
-        this.osc.start();
-        this.updateFrequency();
-        this.updateIcon();
-      } catch (e) { console.warn('Web Audio Context initialization failed', e); }
-    },
-    updateFrequency() {
-      if (!this.osc || this.isMuted) return;
-      const spoons = parseInt(document.body.getAttribute('data-spoons') || '5', 10);
-      const freq = 30 + (spoons - 1) * 7.5;
-      this.osc.frequency.setTargetAtTime(freq, this.ctx.currentTime, 0.5);
-    },
-    toggleMute() {
-      if (!this.ctx) this.init();
-      this.isMuted = !this.isMuted;
-      localStorage.setItem('p31-sound-muted', String(this.isMuted));
-      if (this.gain && this.ctx) {
-        this.gain.gain.setTargetAtTime(this.isMuted ? 0 : 0.03, this.ctx.currentTime, 0.5);
-      }
-      this.updateIcon();
-    },
-    updateIcon() {
-      const icon = document.getElementById('audio-icon');
-      if (!icon) return;
-      if (this.isMuted) {
-        icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>';
-      } else {
-        icon.innerHTML = '<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>';
-      }
-    }
-  };
-  const initAudioListener = () => {
-    AudioEngine.init();
-    document.removeEventListener('click', initAudioListener);
-    document.removeEventListener('keydown', initAudioListener);
-  };
-  document.addEventListener('click', initAudioListener, { once: true });
-  document.addEventListener('keydown', initAudioListener, { once: true });
-
-  // ════════════════════════════════════════════════════════════════════
-  //  FORTUNE 1: Interactive Terminal (xterm.js)
-  // ════════════════════════════════════════════════════════════════════
-  let term = null;
-  let ws = null;
-  let commandBuffer = '';
-  let localShellActive = false;
-  let inputReady = false;
-  let offlineQueue = [];
-  let heartbeatInterval = null;
-  const HIGH_WATERMARK = 100000;
-  const LOW_WATERMARK = 10000;
-  let watermark = 0;
-
-  function activateWorkspace() {
-    const landing = document.getElementById('landing');
-    const workspace = document.getElementById('workspace');
-    const streamPane = document.querySelector('.stream-pane');
-    if (navigator.vibrate) navigator.vibrate(20);
-    landing.classList.add('hidden');
-    setTimeout(() => {
-      landing.style.display = 'none';
-      workspace.classList.add('active');
-      initLiveTerminal();
-      if (streamPane) {
-        streamPane.addEventListener('click', () => {
-          setTimeout(() => { if (term) term.focus(); }, 100);
-        });
-      }
-    }, 600);
-  }
-
-  function initLiveTerminal() {
-    if (term) return;
-
-    term = new Terminal({
-      theme: {
-        background: 'transparent', foreground: '#ffffff',
-        cursor: '#00f0ff', selectionBackground: 'rgba(181, 60, 255, 0.3)',
-        black: '#030305', red: '#ff003c', green: '#00ff66', yellow: '#ffd700',
-        blue: '#00f0ff', magenta: '#b53cff', cyan: '#5cc2c9', white: '#ffffff',
-        brightBlack: '#4a5b78', brightRed: '#ff003c', brightGreen: '#00ff66',
-        brightYellow: '#ffd700', brightBlue: '#00f0ff', brightMagenta: '#b53cff',
-        brightCyan: '#5cc2c9', brightWhite: '#f0f4ff'
-      },
-      fontFamily: "'JetBrains Mono', monospace",
-      fontSize: 14, lineHeight: 1.6, cursorBlink: true, allowTransparency: true,
-      screenReaderMode: true, liveProcessorDismissal: true
-    });
-
-    const fitAddon = new FitAddon();
-    term.loadAddon(fitAddon);
-    term.loadAddon(new WebLinksAddon());
-
-    term.open(document.getElementById('term-out'));
-    fitAddon.fit();
-    term.focus();
-
-    window.addEventListener('resize', () => { if (term) fitAddon.fit(); });
-
-    // Particle throttle while typing
-    term.onData(() => {
-      window.particleDensity = 0.2;
-      clearTimeout(window._particleThrottle);
-      window._particleThrottle = setTimeout(() => { window.particleDensity = 1; }, 1000);
-    });
-
-    connectStream(term);
-  }
-
-  function connectStream(term) {
-    term.writeln('\x1b[38;2;74;91;120m[SYSTEM]\x1b[0m Establishing Quantum Tunnel to mesh relay...');
-
-    // Session recovery: resume from last known message ID
-    const lastMsgId = sessionStorage.getItem('p31-last-msg-id') || '0';
-    const wsUrl = `wss://stream.p31ca.org/pty?lastMsgId=${lastMsgId}`;
-    ws = new WebSocket(wsUrl);
-
-    ws.onopen = () => {
-      term.writeln('\x1b[38;2;0;255;102m✓ Tunnel established. Streaming live PTY.\x1b[0m\r\n');
-      inputReady = true;
-      announceStatus('WebSocket tunnel established');
-
-      // Flush offline queue
-      while (offlineQueue.length > 0) {
-        const data = offlineQueue.shift();
-        ws.send(data);
-      }
-      try { localStorage.removeItem('p31-offline-queue'); } catch (e) {}
-
-      // Heartbeat every 30s to prevent Cloudflare idle timeout
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
-      heartbeatInterval = setInterval(() => {
-        if (ws && ws.readyState === WebSocket.OPEN) {
-          ws.send('\x00'); // null byte as keepalive
-        }
-      }, 30000);
-    };
-
-    ws.onmessage = (e) => {
-      const chunk = typeof e.data === 'string' ? e.data : String(e.data);
-      watermark += chunk.length;
-      term.write(chunk, () => {
-        watermark = Math.max(watermark - chunk.length, 0);
-        if (watermark < LOW_WATERMARK && ws && ws.bufferedAmount < 1024) {
-          ws.resume();
-        }
-      });
-      if (watermark > HIGH_WATERMARK && ws) {
-        ws.pause();
-      }
-      announceStatus('Receiving live stream');
-    };
-
-    ws.onerror = () => {
-      term.writeln('\x1b[38;2;255;0;60m⚠ Relay offline. Falling back to local interactive simulation.\x1b[0m\r\n');
-      announceStatus('Relay offline. Local simulation active.');
-      startLocalShell(term);
-    };
-
-    ws.onclose = () => {
-      inputReady = false;
-      if (heartbeatInterval) clearInterval(heartbeatInterval);
-      if (!localShellActive) {
-        startLocalShell(term);
-      }
-    };
-
-    // Attach term.onData unconditionally: routes to WS or local shell
-    term.onData(data => {
-      if (ws && ws.readyState === WebSocket.OPEN) {
-        ws.send(data);
-      } else {
-        handleLocalInput(data);
-      }
-    });
-  }
-
-  function startLocalShell(term) {
-    localShellActive = true;
-    inputReady = true;
-    term.writeln('\x1b[38;2;0;240;255mLocal simulation ready. Type "help" for commands.\x1b[0m');
-    prompt();
-    announceStatus('Local simulation ready');
-  }
-
-  function handleLocalInput(data) {
-    if (!localShellActive && (!ws || ws.readyState !== WebSocket.OPEN)) {
-      startLocalShell(term);
-    }
-    if (!inputReady) return;
-
-    switch (data) {
-      case '\r':
-        term.writeln('');
-        if (commandBuffer.trim() !== '') {
-          const cmd = commandBuffer.trim().toLowerCase();
-          term.writeln(`\x1b[38;2;0;240;255m$ ${commandBuffer}\x1b[0m`);
-          if (cmd === 'help') {
-            term.writeln('Available: \x1b[38;2;0;240;255mhelp\x1b[0m, \x1b[38;2;0;240;255mstatus\x1b[0m, \x1b[38;2;0;240;255mclear\x1b[0m');
-          } else if (cmd === 'status') {
-            const spoons = document.body.getAttribute('data-spoons') || '5';
-            term.writeln(`K4 Topology: \x1b[38;2;0;255;102mActive\x1b[0m`);
-            term.writeln(`Cognitive Load: ${spoons}/5 Spoons`);
-            term.writeln(`Relay: \x1b[38;2;255;0;60mOffline (local)\x1b[0m`);
-          } else if (cmd === 'clear') {
-            term.clear();
-          } else {
-            term.writeln(`p31: command not found: ${commandBuffer}`);
-          }
-        }
-        prompt();
-        commandBuffer = '';
-        break;
-      case '\u007F':
-        if (commandBuffer.length > 0) {
-          term.write('\b \b');
-          commandBuffer = commandBuffer.slice(0, -1);
-        }
-        break;
-      case '\u0003':
-        term.write('^C');
-        prompt();
-        commandBuffer = '';
-        break;
-      default:
-        if (data >= ' ' && data <= '~') {
-          commandBuffer += data;
-          term.write(data);
-        }
-    }
-  }
-
-  function prompt() {
-    term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
-  }
-
-  function announceStatus(msg) {
-    const el = document.getElementById('terminal-status');
-    if (el) el.textContent = msg;
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  //  FORTUNE 1: Focus Mode
-  // ════════════════════════════════════════════════════════════════════
-  function toggleFocusMode() {
-    const isActive = document.body.classList.toggle('focus-mode');
-    const btn = document.getElementById('focus-toggle');
-    if (btn) btn.classList.toggle('active', isActive);
-    if (term) setTimeout(() => term.focus(), 100);
-    announceStatus(isActive ? 'Focus Mode enabled' : 'Focus Mode disabled');
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  //  FORTUNE 1: Bionic Reading
-  // ════════════════════════════════════════════════════════════════════
-  function toggleBionicReading() {
-    const isActive = document.body.classList.toggle('bionic-reading');
-    localStorage.setItem('p31-bionic-reading', String(isActive));
-    const btn = document.getElementById('bionic-toggle');
-    if (btn) btn.classList.toggle('active', isActive);
-    announceStatus(isActive ? 'Bionic Reading enabled' : 'Bionic Reading disabled');
-  }
-  // Restore Bionic Reading preference
-  if (localStorage.getItem('p31-bionic-reading') === 'true') {
-    document.body.classList.add('bionic-reading');
-    const btn = document.getElementById('bionic-toggle');
-    if (btn) btn.classList.add('active');
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  //  Copy Install Command
-  // ════════════════════════════════════════════════════════════════════
-  function copyInstallCmd() {
-    const text = "curl -fsSL https://cli.p31ca.org/install | bash";
-    const showToast = () => {
-      const toast = document.getElementById('toast');
-      toast.classList.add('show');
-      setTimeout(() => toast.classList.remove('show'), 2000);
-      if (navigator.vibrate) navigator.vibrate(10);
-    };
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(text).then(showToast).catch(console.error);
-    } else {
-      const input = document.createElement('textarea');
-      input.value = text; input.style.position = 'fixed'; input.style.opacity = '0';
-      document.body.appendChild(input); input.select();
-      try { document.execCommand('copy'); showToast(); } catch (err) { console.error('Copy failed', err); }
-      document.body.removeChild(input);
-    }
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  //  FORTUNE 1: Neuro-Adaptive Controls
-  // ════════════════════════════════════════════════════════════════════
-  function setSpoons(level) {
-    document.body.setAttribute('data-spoons', level);
-    document.querySelectorAll('.spoon-btn').forEach(btn => {
-      const val = parseInt(btn.dataset.spoon, 10);
-      btn.classList.toggle('active', val === level);
-      btn.setAttribute('aria-pressed', val === level);
-    });
-    if (navigator.vibrate) navigator.vibrate(10);
-    window.particleDensity = level === 5 ? 1 : level === 3 ? 0.4 : 0;
-  }
-
-  // ════════════════════════════════════════════════════════════════════
-  //  FORTUNE 1: Enterprise Particle Physics Engine (Canvas)
-  // ════════════════════════════════════════════════════════════════════
-  const canvas = document.getElementById('particles');
-  const ctx = canvas.getContext('2d', { alpha: true });
-  let particles = [];
-  let mouse = { x: -1000, y: -1000, radiusSq: 22500 };
-  window.particleDensity = 1;
-  let animationId = null;
-  let isTabVisible = true;
-
-  const resizeObserver = new ResizeObserver(entries => {
-    for (let entry of entries) {
-      canvas.width = entry.contentRect.width;
-      canvas.height = entry.contentRect.height;
-      initParticles();
-    }
-  });
-  resizeObserver.observe(document.body);
-
-  window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; }, { passive: true });
-  window.addEventListener('mouseout', () => { mouse.x = -1000; mouse.y = -1000; }, { passive: true });
-
-  document.addEventListener('visibilitychange', () => {
-    isTabVisible = !document.hidden;
-    if (!isTabVisible && animationId) {
-      cancelAnimationFrame(animationId);
-      animationId = null;
-    } else if (isTabVisible && !animationId) {
-      animate();
-    }
-  });
-
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 2 + 0.5;
-      this.baseX = this.x; this.baseY = this.y;
-      this.density = (Math.random() * 30) + 1;
-      const colors = ['#00f0ff', '#b53cff', '#ffd700', '#00ff66'];
-      this.color = colors[Math.floor(Math.random() * colors.length)];
-    }
-    draw() {
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fillStyle = this.color;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = this.color;
-      ctx.fill();
-    }
-    update() {
-      let dx = mouse.x - this.x; let dy = mouse.y - this.y;
-      let distSq = dx * dx + dy * dy;
-      if (distSq < mouse.radiusSq) {
-        let distance = Math.sqrt(distSq);
-        let force = (150 - distance) / 150;
-        this.x -= (dx / distance) * force * this.density * 0.8;
-        this.y -= (dy / distance) * force * this.density * 0.8;
-      } else {
-        this.x += (this.baseX - this.x) / 20;
-        this.y += (this.baseY - this.y) / 20;
-      }
-      this.baseY -= 0.15;
-      if (this.baseY < -10) {
-        this.baseY = canvas.height + 10;
-        this.baseX = Math.random() * canvas.width;
-        this.x = this.baseX;
-      }
-      this.draw();
-    }
-  }
-
-  function initParticles() {
-    const hwFactor = (navigator.hardwareConcurrency || 4) > 4 ? 1 : 0.6;
-    const targetCount = Math.floor((canvas.width * canvas.height) / 9000 * hwFactor);
-    const maxParticles = Math.min(targetCount, 250);
-    particles = [];
-    for (let i = 0; i < maxParticles; i++) particles.push(new Particle());
-  }
-
-  function animate() {
-    if (!isTabVisible) return;
-    animationId = requestAnimationFrame(animate);
-    const spoonLevel = parseInt(document.body.getAttribute('data-spoons'), 10);
-    if (spoonLevel === 1) { ctx.clearRect(0, 0, canvas.width, canvas.height); return; }
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const activeCount = Math.floor(particles.length * window.particleDensity);
-    for (let i = 0; i < activeCount; i++) particles[i].update();
-  }
-
-  initParticles();
-  animate();
-
-  // ════════════════════════════════════════════════════════════════════
-  //  GENESIS SPARK: Quantum Fireworks Engine + CTA
-  // ════════════════════════════════════════════════════════════════════
-  const GenesisSpark = {
-    state: 'awaiting', // awaiting | ready | liftoff
-    balance: 0,
-    threshold: 0.01,
-    fwCanvas: null,
-    fwCtx: null,
-    fwParticles: [],
-    fwAnimId: null,
-    triggerAddress: null,
-
-    // ── Init ──────────────────────────────────────────────────────────
-    init() {
-      // Set up fireworks canvas
-      this.fwCanvas = document.getElementById('fireworks-canvas');
-      this.fwCtx = this.fwCanvas.getContext('2d', { alpha: true });
-      const resize = () => {
-        this.fwCanvas.width = window.innerWidth;
-        this.fwCanvas.height = window.innerHeight;
-      };
-      window.addEventListener('resize', resize);
-      resize();
-      // Start polling real webhook worker
-      this.startPolling();
-      // Simulate watcher count
-      this.simulateWatchers();
-    },
-
-    // ── Webhook Polling ──────────────────────────────────────────────
-    startPolling() {
-      const WEBHOOK_URL = 'https://genesis-spark.trimtab-signal.workers.dev/status';
-      let fallbackActive = false;
-      const poll = async () => {
-        try {
-          const resp = await fetch(WEBHOOK_URL, { signal: AbortSignal.timeout(5000) });
-          if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-          const data = await resp.json();
-          this.balance = data.raised;
-          fallbackActive = false;
-          if (data.ignited && this.state === 'awaiting') {
-            this.setState('ready');
-          }
-        } catch {
-          if (!fallbackActive) {
-            console.warn('[GenesisSpark] Webhook unreachable, enabling fallback simulation');
-            fallbackActive = true;
-            this.startFallback();
-          }
-        }
-        this.updateUI();
-      };
-      poll();
-      setInterval(poll, 3000);
-    },
-
-    // ── Fallback Simulation (worker offline) ─────────────────────────
-    startFallback() {
-      if (this._fallbackInterval) return;
-      this._fallbackInterval = setInterval(() => {
-        if (this.state === 'liftoff') { clearInterval(this._fallbackInterval); return; }
-        this.balance = Math.min(0.0099, this.balance + Math.random() * 0.0003);
-        if (this.balance >= 0.0099 && this.state === 'awaiting') {
-          this.setState('ready');
-          clearInterval(this._fallbackInterval);
-        }
-        this.updateUI();
-      }, 4000);
-    },
-
-    // ── State Machine ─────────────────────────────────────────────────
-    setState(newState) {
-      const el = document.getElementById('genesis-spark');
-      const status = document.getElementById('spark-status');
-      const title = el.querySelector('.spark-title');
-      const highlight = title.querySelector('.highlight');
-      el.classList.remove('awaiting', 'ready', 'liftoff');
-
-      if (newState === 'ready') {
-        this.state = 'ready';
-        el.classList.add('ready');
-        status.textContent = 'IGNITION READY';
-        highlight.textContent = 'Ignition Ready';
-        title.classList.add('ready-text');
-        document.getElementById('spark-be-first').style.display = 'none';
-        if (navigator.vibrate) navigator.vibrate([50, 100, 50]);
-      } else if (newState === 'liftoff') {
-        this.state = 'liftoff';
-        el.classList.add('liftoff');
-        status.textContent = '✦ LIFTOFF';
-        highlight.textContent = '✦ LIFTOFF';
-        document.getElementById('spark-ignite-btn').style.display = 'none';
-        if (navigator.vibrate) navigator.vibrate([100, 50, 100, 50, 200]);
-      }
-    },
-
-    // ── Ignite (called by button click) ────────────────────────────────
-    ignite() {
-      if (this.state !== 'ready') return;
-      this.setState('liftoff');
-      this.fireworksBurst();
-      // Simulate NFT mint
-      this.triggerAddress = '0x' + Array.from({length: 40}, () =>
-        Math.floor(Math.random() * 16).toString(16)).join('');
-      document.getElementById('spark-be-first').innerHTML =
-        '✦ <strong>The Genesis Spark</strong> minted to <span class="address">' +
-        this.triggerAddress.slice(0, 10) + '...</span>';
-      document.getElementById('spark-be-first').style.display = 'block';
-      // Start continuous celebration
-      this.startCelebration();
-    },
-
-    // ── Fireworks Burst ────────────────────────────────────────────────
-    fireworksBurst() {
-      this.fwCanvas.classList.add('active');
-      this.fwCanvas.classList.add('celebration');
-      const cx = this.fwCanvas.width / 2;
-      const cy = this.fwCanvas.height / 2;
-      // Multiple bursts: K4 tetrahedron + sphere + ring
-      this.createTetrahedronBurst(cx - 150, cy - 80);
-      setTimeout(() => this.createSphereBurst(cx + 100, cy - 120), 200);
-      setTimeout(() => this.createRingBurst(cx, cy + 50), 400);
-      setTimeout(() => this.createTetrahedronBurst(cx + 180, cy + 100), 600);
-      setTimeout(() => this.createSphereBurst(cx - 200, cy + 60), 800);
-      setTimeout(() => this.createRingBurst(cx, cy - 150), 1000);
-      setTimeout(() => this.createTetrahedronBurst(cx - 50, cy + 180), 1200);
-      setTimeout(() => this.createRingBurst(cx + 60, cy - 200), 1400);
-      // Start animation if not running
-      if (!this.fwAnimId) this.animate();
-      // Auto-hide canvas after 15s
-      setTimeout(() => {
-        if (this.fwCanvas) {
-          this.fwCanvas.classList.remove('celebration');
-          setTimeout(() => {
-            this.fwCanvas.classList.remove('active');
-            this.cleanupFireworks();
-          }, 2000);
-        }
-      }, 15000);
-    },
-
-    // ── Fireworks Particle Types ──────────────────────────────────────
-    createTetrahedronBurst(x, y) {
-      const count = 80 + Math.floor(Math.random() * 40);
-      const colors = ['#00f0ff', '#b53cff', '#ffd700', '#00ff66', '#ff6b6b', '#ff66ff'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      // K4 has 4 vertices — create 4 particle clusters
-      const verts = [
-        { dx: 0, dy: -1 },      // top
-        { dx: 0.94, dy: 0.34 },   // right-front
-        { dx: -0.94, dy: 0.34 },  // left-front
-        { dx: 0, dy: 0.5 }        // center-bottom
-      ];
-      for (let i = 0; i < count; i++) {
-        const v = verts[i % 4];
-        const spread = 2 + Math.random() * 3;
-        const speed = 2 + Math.random() * 4;
-        const angle = Math.atan2(v.dy, v.dx) + (Math.random() - 0.5) * 0.5;
-        const dist = spread + Math.random() * spread;
-        this.fwParticles.push({
-          x, y,
-          vx: Math.cos(angle) * speed + v.dx * dist * 0.5,
-          vy: Math.sin(angle) * speed + v.dy * dist * 0.5,
-          size: 1.5 + Math.random() * 2.5,
-          alpha: 1,
-          color: color,
-          decay: 0.008 + Math.random() * 0.012,
-          gravity: 0.03 + Math.random() * 0.02,
-          life: 1,
-          trail: [],
-          maxTrail: 6 + Math.floor(Math.random() * 4),
-        });
-      }
-    },
-
-    createSphereBurst(x, y) {
-      const count = 60 + Math.floor(Math.random() * 30);
-      const colors = ['#00f0ff', '#b53cff', '#ffd700'];
-      const color = colors[Math.floor(Math.random() * colors.length)];
-      for (let i = 0; i < count; i++) {
-        const angle = (Math.PI * 2 / count) * i;
-        const speed = 3 + Math.random() * 3;
-        this.fwParticles.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          size: 2 + Math.random() * 3,
-          alpha: 1,
-          color: color,
-          decay: 0.006 + Math.random() * 0.01,
-          gravity: 0.02 + Math.random() * 0.03,
-          life: 1,
-          trail: [],
-          maxTrail: 4 + Math.floor(Math.random() * 4),
-        });
-      }
-    },
-
-    createRingBurst(x, y) {
-      const count = 40 + Math.floor(Math.random() * 20);
-      const hue = Math.random() * 360;
-      for (let i = 0; i < count; i++) {
-        const angle = (Math.PI * 2 / count) * i;
-        const speed = 2 + Math.random() * 2;
-        const hslColor = `hsl(${hue + i * 15}, 100%, 60%)`;
-        this.fwParticles.push({
-          x, y,
-          vx: Math.cos(angle) * speed,
-          vy: Math.sin(angle) * speed,
-          size: 1.5 + Math.random() * 2,
-          alpha: 1,
-          color: hslColor,
-          decay: 0.01 + Math.random() * 0.015,
-          gravity: 0.01,
-          life: 1,
-          trail: [],
-          maxTrail: 3 + Math.floor(Math.random() * 3),
-        });
-      }
-    },
-
-    // ── Continuous Celebration Sparks ─────────────────────────────────
-    startCelebration() {
-      // Continuous small bursts during celebration
-      const burstInterval = setInterval(() => {
-        const cx = Math.random() * this.fwCanvas.width;
-        const cy = Math.random() * this.fwCanvas.height * 0.6;
-        const type = Math.floor(Math.random() * 3);
-        if (type === 0) this.createTetrahedronBurst(cx, cy);
-        else if (type === 1) this.createSphereBurst(cx, cy);
-        else this.createRingBurst(cx, cy);
-      }, 800);
-      // Store interval reference for cleanup
-      this._celebrationInterval = burstInterval;
-      setTimeout(() => {
-        clearInterval(burstInterval);
-        this._celebrationInterval = null;
-      }, 14000);
-    },
-
-    // ── Animation Loop ────────────────────────────────────────────────
-    animate() {
-      const ctx = this.fwCtx;
-      const canvas = this.fwCanvas;
-      if (!ctx || !canvas) return;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      // Set blend mode for glow
-      ctx.globalCompositeOperation = 'screen';
-      // Update and draw particles
-      const spoons = parseInt(document.body.getAttribute('data-spoons') || '5', 10);
-      const intensity = spoons / 5;
-      for (let i = this.fwParticles.length - 1; i >= 0; i--) {
-        const p = this.fwParticles[i];
-        p.vx *= 0.99;
-        p.vy += p.gravity;
-        p.x += p.vx;
-        p.y += p.vy;
-        p.alpha -= p.decay * (1 + (1 - intensity) * 2);
-        p.life = Math.max(0, p.alpha);
-        // Store trail
-        p.trail.push({ x: p.x, y: p.y });
-        if (p.trail.length > p.maxTrail) p.trail.shift();
-        if (p.alpha <= 0) {
-          this.fwParticles.splice(i, 1);
-          continue;
-        }
-        // Draw trail (entanglement effect)
-        if (p.trail.length > 2) {
-          ctx.beginPath();
-          ctx.moveTo(p.trail[0].x, p.trail[0].y);
-          for (let t = 1; t < p.trail.length; t++) {
-            ctx.lineTo(p.trail[t].x, p.trail[t].y);
-          }
-          ctx.strokeStyle = p.color;
-          ctx.globalAlpha = p.alpha * 0.3;
-          ctx.lineWidth = p.size * 0.5;
-          ctx.stroke();
-        }
-        // Draw particle
-        ctx.beginPath();
-        ctx.arc(p.x, p.y, p.size * (0.5 + 0.5 * p.life), 0, Math.PI * 2);
-        ctx.fillStyle = p.color;
-        ctx.globalAlpha = p.alpha;
-        ctx.shadowBlur = 15;
-        ctx.shadowColor = p.color;
-        ctx.fill();
-      }
-      // Draw entanglement lines between nearby particles
-      const nearby = this.fwParticles.filter(p => p.alpha > 0.3);
-      for (let i = 0; i < nearby.length; i += 2) {
-        if (i + 1 >= nearby.length) break;
-        const a = nearby[i];
-        const b = nearby[i + 1];
-        const dx = a.x - b.x;
-        const dy = a.y - b.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120 && dist > 10) {
-          ctx.beginPath();
-          ctx.moveTo(a.x, a.y);
-          ctx.quadraticCurveTo(
-            (a.x + b.x) / 2 + (Math.random() - 0.5) * 30,
-            (a.y + b.y) / 2 + (Math.random() - 0.5) * 30,
-            b.x, b.y
-          );
-          ctx.strokeStyle = '#00f0ff';
-          ctx.globalAlpha = Math.min(a.alpha, b.alpha) * 0.2 * (1 - dist / 120);
-          ctx.lineWidth = 1;
-          ctx.shadowBlur = 0;
-          ctx.stroke();
+        const resp = await fetch('https://genesis-spark.trimtab-signal.workers.dev/status');
+        if (!resp.ok) throw new Error('Worker offline');
+        const data = await resp.json();
+        const pct = Math.min(100, (data.raised / 0.01) * 100);
+        document.getElementById('mini-raised').textContent = data.raised.toFixed(3);
+        document.getElementById('mini-fill').style.width = pct + '%';
+      } catch {
+        let val = parseFloat(document.getElementById('mini-raised').textContent) || 0;
+        if (val < 0.009) {
+          val += 0.0005;
+          document.getElementById('mini-raised').textContent = val.toFixed(3);
+          document.getElementById('mini-fill').style.width = ((val / 0.01) * 100) + '%';
         }
       }
-      ctx.globalAlpha = 1;
-      ctx.globalCompositeOperation = 'source-over';
-      ctx.shadowBlur = 0;
-      // Continue animation
-      if (this.fwParticles.length > 0 || this.fwCanvas.classList.contains('active')) {
-        this.fwAnimId = requestAnimationFrame(() => this.animate());
-      } else {
-        this.fwAnimId = null;
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-      }
-    },
-
-    // ── Cleanup ────────────────────────────────────────────────────────
-    cleanupFireworks() {
-      if (this.fwAnimId) {
-        cancelAnimationFrame(this.fwAnimId);
-        this.fwAnimId = null;
-      }
-      if (this._celebrationInterval) {
-        clearInterval(this._celebrationInterval);
-        this._celebrationInterval = null;
-      }
-      this.fwParticles = [];
-      if (this.fwCtx) this.fwCtx.clearRect(0, 0, this.fwCanvas.width, this.fwCanvas.height);
-    },
-
-    // ── Watcher Simulation ────────────────────────────────────────────
-    simulateWatchers() {
-      let count = 142;
-      setInterval(() => {
-        count += Math.floor(Math.random() * 5) - 2;
-        count = Math.max(20, count);
-        document.getElementById('spark-watchers').textContent = count;
-      }, 4000);
-    },
-
-    // ── UI Sync ────────────────────────────────────────────────────────
-    updateUI() {
-      const fill = document.getElementById('spark-progress-fill');
-      const raised = document.getElementById('spark-raised');
-      const pct = Math.min(100, (this.balance / this.threshold) * 100);
-      fill.style.width = pct + '%';
-      fill.parentElement.setAttribute('aria-valuenow', Math.round(pct));
-      raised.textContent = this.balance.toFixed(3);
-    },
-  };
-
-  // Initialize Genesis Spark (script at bottom of body — DOM ready)
-  GenesisSpark.init();
-
-  // ════════════════════════════════════════════════════════════════════
-  //  Audio Toggle + Keyboard Shortcuts
-  // ════════════════════════════════════════════════════════════════════
-  document.getElementById('audio-toggle').addEventListener('click', () => {
-    AudioEngine.toggleMute();
-    if (navigator.vibrate) navigator.vibrate(10);
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-    if (e.key === '1') setSpoons(1);
-    else if (e.key === '3') setSpoons(3);
-    else if (e.key === '5') setSpoons(5);
-    else if (e.key === 'Enter' && !document.getElementById('workspace').classList.contains('active')) {
-      activateWorkspace();
     }
-    else if (e.key.toLowerCase() === 'm') AudioEngine.toggleMute();
-  });
+    updateGenesis();
+    setInterval(updateGenesis, 5000);
 
-  // Simulate live viewer count flux
-  setInterval(() => {
-    const v = document.getElementById('viewer-count');
-    if (v) {
-      let count = parseInt(v.innerText);
-      count = Math.max(10, count + (Math.floor(Math.random() * 7) - 3));
-      v.innerText = count;
+    function copyInstallCmd() {
+      const text = "curl -fsSL https://cli.p31ca.org/install | bash";
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
     }
-  }, 3000);
-
-  console.log('%c🧠 P31 Quantum CLI v2.0 Enterprise', 'color: #00f0ff; font-weight: bold; font-size: 14px;');
-  console.log('Topology: K4 Active | Spoons [1, 3, 5] | Mute [M] | Boot [Enter]');
-</script>
+  </script>
 </body>
 </html>
