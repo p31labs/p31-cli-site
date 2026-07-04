@@ -238,19 +238,55 @@
             </div>
             <div class="card" style="display:flex;flex-direction:column;">
               <div class="card-header">Network Topology <span style="font-size:10px;color:var(--text-dim);font-weight:400;" id="k4-last-update"></span></div>
-              <svg class="k4-mini" viewBox="0 0 100 100" id="k4-svg">
-                <g stroke="rgba(0,240,255,0.2)" stroke-width="1.5">
-                  <line x1="50" y1="10" x2="90" y2="80" />
-                  <line x1="90" y1="80" x2="10" y2="80" />
-                  <line x1="10" y1="80" x2="50" y2="10" />
-                  <line x1="50" y1="10" x2="50" y2="55" />
-                  <line x1="90" y1="80" x2="50" y2="55" />
-                  <line x1="10" y1="80" x2="50" y2="55" />
+              <svg class="k4-mini" viewBox="0 0 300 300" id="k4-svg">
+                <defs>
+                  <filter id="k4GlowCyan" x="-50%" y="-50%" width="200%" height="200%">
+                    <feGaussianBlur stdDeviation="6" result="blur" />
+                    <feMerge><feMergeNode in="blur" /><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+                  </filter>
+                  <filter id="k4ChromAb" x="-20%" y="-20%" width="140%" height="140%">
+                    <feOffset in="SourceGraphic" dx="1" dy="0" result="red" />
+                    <feOffset in="SourceGraphic" dx="-1" dy="0" result="blue" />
+                    <feMerge><feMergeNode in="red" /><feMergeNode in="SourceGraphic" /><feMergeNode in="blue" /></feMerge>
+                  </filter>
+                  <radialGradient id="orbitalGlow" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#00f0ff" stop-opacity="0.6" />
+                    <stop offset="100%" stop-color="#00f0ff" stop-opacity="0" />
+                  </radialGradient>
+                  <radialGradient id="k4Superposition" cx="50%" cy="50%" r="50%">
+                    <stop offset="0%" stop-color="#b53cff" stop-opacity="0.9" />
+                    <stop offset="50%" stop-color="#00f0ff" stop-opacity="0.5" />
+                    <stop offset="100%" stop-color="#b53cff" stop-opacity="0" />
+                  </radialGradient>
+                  <linearGradient id="k4Edge" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" stop-color="#b53cff" />
+                    <stop offset="50%" stop-color="#00f0ff" />
+                    <stop offset="100%" stop-color="#ffd700" />
+                  </linearGradient>
+                </defs>
+                <ellipse cx="150" cy="150" rx="120" ry="80" fill="url(#orbitalGlow)" opacity="0.25" transform="rotate(30 150 150)">
+                  <animateTransform attributeName="transform" type="rotate" from="30 150 150" to="390 150 150" dur="12s" repeatCount="indefinite" />
+                </ellipse>
+                <ellipse cx="150" cy="150" rx="100" ry="70" fill="url(#orbitalGlow)" opacity="0.15" transform="rotate(-45 150 150)">
+                  <animateTransform attributeName="transform" type="rotate" from="-45 150 150" to="315 150 150" dur="18s" repeatCount="indefinite" />
+                </ellipse>
+                <g stroke="url(#k4Edge)" stroke-width="2.5" fill="none" filter="url(#k4GlowCyan)">
+                  <line x1="150" y1="30" x2="250" y2="210"><animate attributeName="stroke-dasharray" values="10 20; 20 10; 10 20" dur="3s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -30" dur="3s" repeatCount="indefinite" /></line>
+                  <line x1="250" y1="210" x2="50" y2="210"><animate attributeName="stroke-dasharray" values="8 24; 24 8; 8 24" dur="4s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -32" dur="4s" repeatCount="indefinite" /></line>
+                  <line x1="50" y1="210" x2="150" y2="30"><animate attributeName="stroke-dasharray" values="12 18; 18 12; 12 18" dur="3.5s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -30" dur="3.5s" repeatCount="indefinite" /></line>
+                  <line x1="150" y1="30" x2="150" y2="140"><animate attributeName="stroke-dasharray" values="6 30; 30 6; 6 30" dur="5s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -36" dur="5s" repeatCount="indefinite" /></line>
+                  <line x1="250" y1="210" x2="150" y2="140"><animate attributeName="stroke-dasharray" values="14 16; 16 14; 14 16" dur="2.8s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -30" dur="2.8s" repeatCount="indefinite" /></line>
+                  <line x1="50" y1="210" x2="150" y2="140"><animate attributeName="stroke-dasharray" values="10 22; 22 10; 10 22" dur="3.2s" repeatCount="indefinite" /><animate attributeName="stroke-dashoffset" values="0; -32" dur="3.2s" repeatCount="indefinite" /></line>
                 </g>
-                <circle cx="50" cy="10" r="3" id="k4-v0" fill="#00f0ff" />
-                <circle cx="90" cy="80" r="3" id="k4-v1" fill="#00f0ff" />
-                <circle cx="10" cy="80" r="3" id="k4-v2" fill="#00f0ff" />
-                <circle cx="50" cy="55" r="4" id="k4-v3" fill="#b53cff" filter="drop-shadow(0 0 8px #b53cff)" />
+                <circle cx="150" cy="30" r="14" id="k4-v0" fill="url(#k4Superposition)" filter="url(#k4ChromAb)"><animate attributeName="r" values="12; 16; 12" dur="2s" repeatCount="indefinite" /></circle>
+                <circle cx="250" cy="210" r="14" id="k4-v1" fill="url(#k4Superposition)" filter="url(#k4ChromAb)"><animate attributeName="r" values="14; 18; 14" dur="2.5s" repeatCount="indefinite" /></circle>
+                <circle cx="50" cy="210" r="14" id="k4-v2" fill="url(#k4Superposition)" filter="url(#k4ChromAb)"><animate attributeName="r" values="13; 17; 13" dur="2.2s" repeatCount="indefinite" /></circle>
+                <circle cx="150" cy="140" r="20" id="k4-v3" fill="url(#k4Superposition)" filter="url(#k4GlowCyan)"><animate attributeName="fill" values="#b53cff; #00f0ff; #b53cff" dur="1.5s" repeatCount="indefinite" /><animate attributeName="r" values="18; 24; 18" dur="1.5s" repeatCount="indefinite" /></circle>
+                <g fill="#ffffff" opacity="0.6">
+                  <circle cx="150" cy="15" r="1.5"><animate attributeName="cx" values="150; 250; 150" dur="6s" repeatCount="indefinite" /><animate attributeName="cy" values="30; 210; 30" dur="6s" repeatCount="indefinite" /></circle>
+                  <circle cx="250" cy="210" r="1.5"><animate attributeName="cx" values="250; 50; 250" dur="7s" repeatCount="indefinite" /><animate attributeName="cy" values="210; 210; 210" dur="7s" repeatCount="indefinite" /></circle>
+                  <circle cx="50" cy="210" r="1.5"><animate attributeName="cx" values="50; 150; 50" dur="5s" repeatCount="indefinite" /><animate attributeName="cy" values="210; 30; 210" dur="5s" repeatCount="indefinite" /></circle>
+                </g>
               </svg>
               <div style="display:flex;flex-direction:column;gap:8px;font-size:13px;font-family:var(--font-mono);" id="k4-nodes">
                 <div style="display:flex;justify-content:space-between;"><span style="color:var(--text-muted);">Node 0 (Core)</span><span style="color:var(--text-dim);">○ LOADING</span></div>
@@ -573,24 +609,84 @@
     const JITTERBUG_URL = 'https://jitterbug-api.trimtab-signal.workers.dev/brain-dump';
     const JITTERBUG_PSK = 'p31-sierpinski-ophile-ophore-ssm-1782167800';
     document.getElementById('bd-submit').addEventListener('click', async function() {
-      const input = document.getElementById('bd-input'); const results = document.getElementById('bd-results'); const inner = document.getElementById('bd-results-inner'); const text = input.value.trim();
-      if (!text) return; const orig = this.innerHTML; this.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Decomposing...'; this.disabled = true; results.classList.remove('active');
+      const input = document.getElementById('bd-input');
+      const results = document.getElementById('bd-results');
+      const inner = document.getElementById('bd-results-inner');
+      const text = input.value.trim();
+      if (!text) return;
+      const orig = this.innerHTML;
+      this.innerHTML = '<i class="ph-bold ph-spinner animate-spin"></i> Decomposing...';
+      this.disabled = true;
+      results.classList.remove('active');
+      input.disabled = true;
       try {
-        const resp = await fetch(JITTERBUG_URL, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${JITTERBUG_PSK}` }, body: JSON.stringify({ projectName: "Operator Cognitive Offload", coreProblem: text, constraints: [ { id: "c1", rule: "Decompose into actionable axes", severity: "strong" } ], desiredEndState: { description: "Decomposed actionable axes", targetStage: "seed", measurableCriteria: [] }, knownAssets: [], openQuestions: [], metadata: { capturedAt: new Date().toISOString(), operator: "local", source: "app", tags: ["braindump"] } }) });
-        if (!resp.ok) throw new Error(`API error: ${resp.status}`); const data = await resp.json();
-        let statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); let statusData = await statusResp.json(); let attempts = 0;
-        while (statusData.status === 'pending' && attempts < 10) { await new Promise(r => setTimeout(r, 2000)); statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, { headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` } }); statusData = await statusResp.json(); attempts++; }
-        let axesHtml = ''; if (statusData.axes && Array.isArray(statusData.axes)) { statusData.axes.forEach((ax, i) => { axesHtml += `<div class="axis-card ${i % 2 === 1 ? 'gold' : ''}"><div class="axis-title ${i % 2 === 1 ? 'gold' : ''}">${ax.title || 'Axis ' + (i+1)}</div><p style="font-size:14px;color:var(--text-main);">${ax.description || ax.insight || JSON.stringify(ax)}</p></div>`; }); }
-        if (!axesHtml) axesHtml = `<div class="axis-card"><div class="axis-title">Decomposition Complete</div><p style="font-size:14px;color:var(--text-main);">Status: ${statusData.status}${statusData.convergence ? ' · Convergence: ' + statusData.convergence.overall : ''}</p><div style="margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);">ID: ${data.id}</div></div>`;
-        inner.innerHTML = axesHtml; results.classList.add('active');
-      } catch (err) { inner.innerHTML = `<div style="color:#ff003c;font-size:14px;border:1px solid rgba(255,0,60,0.3);background:rgba(255,0,60,0.05);padding:16px;border-radius:var(--radius-sm);">Error: ${err.message}</div>`; results.classList.add('active'); }
-      finally { this.innerHTML = orig; this.disabled = false; input.value = ''; }
+        const payload = {
+          projectName: "Operator Cognitive Offload",
+          coreProblem: text,
+          currentState: { artifacts: [], gaps: [], blockers: [] },
+          constraints: [ { id: "c1", rule: "Decompose into actionable axes", severity: "strong" } ],
+          desiredEndState: { description: "Decomposed actionable axes for immediate execution", targetStage: "seed", measurableCriteria: [], convergenceTarget: "" },
+          knownAssets: [],
+          openQuestions: [],
+          metadata: { capturedAt: new Date().toISOString(), operator: "local", source: "app", tags: ["braindump"] }
+        };
+        const resp = await fetch(JITTERBUG_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${JITTERBUG_PSK}` },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) {
+          const errorBody = await resp.json();
+          console.error('Jitterbug Error Response:', errorBody);
+          let errMsg = `API Error (${resp.status}): `;
+          if (errorBody.error && typeof errorBody.error === 'object' && errorBody.error.issues) {
+            errMsg = errorBody.error.issues.map(issue => `${issue.path.join('.')}: ${issue.message}`).join('; ');
+          } else {
+            errMsg += JSON.stringify(errorBody) || 'Unknown error';
+          }
+          throw new Error(errMsg);
+        }
+        const data = await resp.json();
+        let statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, {
+          headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` }
+        });
+        let statusData = await statusResp.json();
+        let attempts = 0;
+        while (statusData.status === 'pending' && attempts < 10) {
+          await new Promise(r => setTimeout(r, 2000));
+          statusResp = await fetch(`${JITTERBUG_URL}/brain-dump/${data.id}/status`, {
+            headers: { 'Authorization': `Bearer ${JITTERBUG_PSK}` }
+          });
+          statusData = await statusResp.json();
+          attempts++;
+        }
+        let axesHtml = '';
+        if (statusData.axes && Array.isArray(statusData.axes) && statusData.axes.length) {
+          statusData.axes.forEach((ax, i) => {
+            axesHtml += `<div class="axis-card ${i % 2 === 1 ? 'gold' : ''}"><div class="axis-title ${i % 2 === 1 ? 'gold' : ''}">${ax.title || 'Axis ' + (i+1)}</div><p style="font-size:14px;color:var(--text-main);">${ax.description || ax.insight || JSON.stringify(ax)}</p></div>`;
+          });
+        } else {
+          axesHtml = `<div class="axis-card"><div class="axis-title">Decomposition Complete</div><p style="font-size:14px;color:var(--text-main);">Status: ${statusData.status}${statusData.convergence ? ' · Convergence: ' + statusData.convergence.overall : ''}</p><div style="margin-top:12px;font-family:var(--font-mono);font-size:12px;color:var(--text-dim);">ID: ${data.id}</div></div>`;
+        }
+        inner.innerHTML = axesHtml;
+        results.classList.add('active');
+      } catch (err) {
+        inner.innerHTML = `<div style="color:#ff003c;font-size:14px;border:1px solid rgba(255,0,60,0.3);background:rgba(255,0,60,0.05);padding:16px;border-radius:var(--radius-sm);">Error: ${err.message}</div>`;
+        results.classList.add('active');
+      } finally {
+        this.innerHTML = orig;
+        this.disabled = false;
+        input.value = '';
+        input.disabled = false;
+      }
     });
     (function initTerminal() {
       const container = document.getElementById('xterm-container'); if (!container) return;
       const term = new Terminal({ theme: { background: 'transparent', foreground: '#e2e8f0', cursor: '#00f0ff', black: '#030305', cyan: '#5cc2c9', magenta: '#b53cff' }, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, lineHeight: 1.5, cursorBlink: true, disableStdin: false, convertEol: true });
       window.term = term; const fitAddon = new FitAddon.FitAddon(); window.fitAddon = fitAddon; term.loadAddon(fitAddon); term.loadAddon(new WebLinksAddon.WebLinksAddon()); term.open(container); fitAddon.fit();
       const statusEl = document.getElementById('terminal-status'); let ws = null; let reconnectTimer = null; let attemptCount = 0; let localMode = false;
+      const PROXY_URL = 'https://phos-ai-proxy.trimtab-signal.workers.dev/ai/chat';
+      const PROXY_TOKEN = 'p31-sierpinski-ophile-ophore-ssm-1782167800';
       function startLocalSimulation() {
         localMode = true; statusEl.textContent = '● Local Mode'; statusEl.style.color = '#feca57';
         term.clear();
@@ -602,29 +698,66 @@
         setTimeout(() => term.writeln('\x1b[38;2;74;91;120m[BOOT] 413 cryptographic tests passed\x1b[0m'), 900);
         setTimeout(() => {
           term.writeln('\x1b[38;2;0;255;102m\u2713 System ready.\x1b[0m');
-          term.writeln('\x1b[38;2;181;60;255mType \x1b[0m\x1b[38;2;0;240;255mhelp\x1b[0m\x1b[38;2;181;60;255m for available commands.\x1b[0m');
+          term.writeln('\x1b[38;2;181;60;255mType \x1b[0m\x1b[38;2;0;240;255m/help\x1b[0m\x1b[38;2;181;60;255m for commands. Use \x1b[0m\x1b[38;2;0;240;255m/chat <message>\x1b[0m\x1b[38;2;181;60;255m to talk to the AI.\x1b[0m');
           term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
         }, 1200);
         let inputBuffer = '';
         term.onData((data) => {
           if (data === '\r') {
-            term.write('\r\n'); const cmd = inputBuffer.trim().toLowerCase();
-            if (cmd === 'help') {
-              term.writeln('\x1b[38;2;0;240;255mhelp\x1b[0m        Show this help');
-              term.writeln('\x1b[38;2;0;240;255mstatus\x1b[0m      System status');
-              term.writeln('\x1b[38;2;0;240;255mclear\x1b[0m       Clear terminal');
-              term.writeln('\x1b[38;2;0;240;255mspoons\x1b[0m     Show spoon level');
-            } else if (cmd === 'status') {
+            term.write('\r\n'); const cmd = inputBuffer.trim(); inputBuffer = '';
+            if (cmd.startsWith('/chat ')) {
+              const message = cmd.slice(6).trim();
+              if (!message) {
+                term.writeln('\x1b[38;2;255;0;60m[ERROR] Usage: /chat <your question>\x1b[0m');
+                term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); return;
+              }
+              term.writeln('\x1b[38;2;0;240;255m[Agent] Thinking...\x1b[0m');
+              fetch(PROXY_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${PROXY_TOKEN}` },
+                body: JSON.stringify({ messages: [{ role: 'user', content: message }], stream: true })
+              })
+              .then(res => { if (!res.ok) throw new Error(`HTTP ${res.status}`); return res.body.getReader(); })
+              .then(reader => {
+                const decoder = new TextDecoder('utf-8');
+                term.writeln('\x1b[38;2;181;60;255m[Agent]\x1b[0m');
+                function readChunk() {
+                  return reader.read().then(({ done, value }) => {
+                    if (done) {
+                      term.write('\r\n\x1b[38;2;0;255;102m\u2713 Done.\x1b[0m');
+                      term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); return;
+                    }
+                    term.write('\x1b[38;2;200;180;255m' + decoder.decode(value, { stream: true }) + '\x1b[0m');
+                    return readChunk();
+                  });
+                }
+                return readChunk();
+              })
+              .catch(err => {
+                term.writeln('\x1b[38;2;255;0;60m[ERROR] AI proxy unreachable: ' + err.message + '\x1b[0m');
+                term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+              });
+            } else if (cmd === '/help' || cmd === 'help') {
+              term.writeln('\x1b[38;2;0;240;255mAvailable commands:\x1b[0m');
+              term.writeln('  \x1b[38;2;0;240;255m/chat <message>\x1b[0m  - Talk to the AI');
+              term.writeln('  \x1b[38;2;0;240;255m/help\x1b[0m           - Show this help');
+              term.writeln('  \x1b[38;2;0;240;255m/status\x1b[0m         - System status');
+              term.writeln('  \x1b[38;2;0;240;255m/spoons\x1b[0m         - Show spoon level');
+              term.writeln('  \x1b[38;2;0;240;255m/clear\x1b[0m          - Clear terminal');
+              term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+            } else if (cmd === '/status' || cmd === 'status') {
               term.writeln('\x1b[38;2;74;91;120mMode:      \x1b[0mLocal simulation');
               term.writeln('\x1b[38;2;74;91;120mSpoons:    \x1b[0m' + document.body.getAttribute('data-spoons'));
               term.writeln('\x1b[38;2;74;91;120mTopology:  \x1b[0mK4 tetrahedral mesh');
               term.writeln('\x1b[38;2;74;91;120mMCP Tools: \x1b[0m26');
               term.writeln('\x1b[38;2;74;91;120mTests:     \x1b[0m413 passing');
-            } else if (cmd === 'clear') { term.clear();
-            } else if (cmd === 'spoons') {
+              term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+            } else if (cmd === '/clear' || cmd === 'clear') { term.clear(); term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+            } else if (cmd === '/spoons' || cmd === 'spoons') {
               term.writeln('\x1b[38;2;74;91;120mCurrent spoon level: \x1b[0m\x1b[38;2;0;240;255m' + document.body.getAttribute('data-spoons') + '/5\x1b[0m');
-            } else if (cmd) { term.writeln('\x1b[38;2;255;0;60mCommand not found: \x1b[0m' + cmd); }
-            inputBuffer = ''; term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+              term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+            } else if (cmd) { term.writeln('\x1b[38;2;255;0;60mUnknown: \x1b[0m' + cmd + '\x1b[38;2;74;91;120m. Try /help\x1b[0m'); term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); }
+            else { term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); }
           } else if (data === '\x7f') { if (inputBuffer.length > 0) { inputBuffer = inputBuffer.slice(0, -1); term.write('\b \b'); }
           } else if (data === '\x03') { inputBuffer = ''; term.write('^C\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
           } else if (!data.startsWith('\x1b')) { inputBuffer += data; term.write(data); }
