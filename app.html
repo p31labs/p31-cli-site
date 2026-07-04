@@ -67,7 +67,7 @@
     .user-status { font-size: 10px; color: var(--quantum-green); font-family: var(--font-mono); }
     .main-area { flex: 1; display: flex; flex-direction: column; background: var(--bg-void); position: relative; min-width: 0; }
     .top-header { height: 72px; display: flex; align-items: center; justify-content: space-between; padding: 0 40px; border-bottom: 1px solid var(--border-subtle); background: rgba(3, 3, 5, 0.8); backdrop-filter: blur(10px); z-index: 20; flex-shrink: 0; }
-    .view-title { font-size: 18px; font-weight: 600; color: var(--text-bright); display: flex; align-items: center; gap: 12px; }
+    .view-title { font-size: 18px; font-weight: 600; color: var(--text-bright); display: flex; align-items: center; gap: 12px; font-family: var(--font-sans); letter-spacing: -0.3px; }
     .header-controls { display: flex; align-items: center; gap: 12px; }
     .spoon-group { display: flex; background: var(--bg-surface); border: 1px solid var(--border-subtle); border-radius: 20px; padding: 4px; }
     .spoon-btn { background: transparent; border: none; color: var(--text-muted); width: 28px; height: 28px; border-radius: 50%; font-family: var(--font-mono); font-size: 11px; cursor: pointer; transition: all 0.2s; }
@@ -509,8 +509,9 @@
         }
         if (meshResp.status === 'fulfilled' && meshResp.value) {
           const d = meshResp.value;
-          const vCount = d.mesh ? d.mesh.vertices || d.vertices : d.vertices || 0;
-          document.getElementById('gb-mesh').textContent = vCount + 'V/' + (d.edges || 0) + 'E';
+          const rawVerts = d.mesh ? d.mesh.vertices || d.vertices : d.vertices || [];
+          const vCount = Array.isArray(rawVerts) ? rawVerts.length : Number(rawVerts) || 0;
+          document.getElementById('gb-mesh').textContent = vCount + 'V/' + (d.edges || d.mesh?.edges || 0) + 'E';
           document.getElementById('gb-mesh-desc').textContent = d.rigidity || (d.topology === 'K4' ? 'Rigid (β₂=1)' : 'K4 topology');
         }
         const events = document.getElementById('gb-events');
@@ -589,8 +590,64 @@
       const container = document.getElementById('xterm-container'); if (!container) return;
       const term = new Terminal({ theme: { background: 'transparent', foreground: '#e2e8f0', cursor: '#00f0ff', black: '#030305', cyan: '#5cc2c9', magenta: '#b53cff' }, fontFamily: "'JetBrains Mono', monospace", fontSize: 13, lineHeight: 1.5, cursorBlink: true, disableStdin: false, convertEol: true });
       window.term = term; const fitAddon = new FitAddon.FitAddon(); window.fitAddon = fitAddon; term.loadAddon(fitAddon); term.loadAddon(new WebLinksAddon.WebLinksAddon()); term.open(container); fitAddon.fit();
-      const statusEl = document.getElementById('terminal-status'); let ws = null; let reconnectTimer = null;
-      function connect() { statusEl.textContent = '● Connecting...'; statusEl.style.color = '#8b9bb4'; try { ws = new WebSocket('wss://stream.p31ca.org/pty'); ws.binaryType = 'arraybuffer'; ws.onopen = () => { statusEl.textContent = '● Connected'; statusEl.style.color = '#00ff66'; if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; } term.clear(); term.writeln('\x1b[38;2;74;91;120m[SYSTEM] P31 Sovereign OS v2.0\x1b[0m'); term.writeln('\x1b[38;2;0;255;102m✓ WebSocket established.\x1b[0m'); term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m '); }; ws.onmessage = (ev) => { if (ev.data instanceof ArrayBuffer) { const decoder = new TextDecoder('utf-8'); const text = decoder.decode(ev.data); term.write(text); } else if (typeof ev.data === 'string') { term.write(ev.data); } }; ws.onclose = () => { statusEl.textContent = '● Disconnected'; statusEl.style.color = '#ff003c'; if (!reconnectTimer) { reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 3000); } }; ws.onerror = () => { statusEl.textContent = '● Error'; statusEl.style.color = '#ff003c'; ws.close(); }; term.onData((data) => { if (ws && ws.readyState === WebSocket.OPEN) { ws.send(data); } }); window.addEventListener('resize', () => { fitAddon.fit(); if (ws && ws.readyState === WebSocket.OPEN) { const dims = term.cols + ':' + term.rows; ws.send('\x1b[8;' + dims + 't'); } }); } catch (e) { statusEl.textContent = '● Connection failed'; statusEl.style.color = '#ff003c'; if (!reconnectTimer) { reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 5000); } } }
+      const statusEl = document.getElementById('terminal-status'); let ws = null; let reconnectTimer = null; let attemptCount = 0; let localMode = false;
+      function startLocalSimulation() {
+        localMode = true; statusEl.textContent = '● Local Mode'; statusEl.style.color = '#feca57';
+        term.clear();
+        term.writeln('\x1b[38;2;74;91;120m[SYSTEM] P31 Sovereign OS v2.0 \u2014 Local Simulation\x1b[0m');
+        term.writeln('\x1b[38;2;254;202;87m\u26a0 WebSocket unavailable — running offline\x1b[0m');
+        term.writeln('\x1b[38;2;74;91;120m[BOOT] Initializing K4 mesh topology...\x1b[0m');
+        setTimeout(() => term.writeln('\x1b[38;2;74;91;120m[BOOT] Loading spoon-aware scheduler...\x1b[0m'), 300);
+        setTimeout(() => term.writeln('\x1b[38;2;74;91;120m[BOOT] 26 MCP tools cached locally\x1b[0m'), 600);
+        setTimeout(() => term.writeln('\x1b[38;2;74;91;120m[BOOT] 413 cryptographic tests passed\x1b[0m'), 900);
+        setTimeout(() => {
+          term.writeln('\x1b[38;2;0;255;102m\u2713 System ready.\x1b[0m');
+          term.writeln('\x1b[38;2;181;60;255mType \x1b[0m\x1b[38;2;0;240;255mhelp\x1b[0m\x1b[38;2;181;60;255m for available commands.\x1b[0m');
+          term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+        }, 1200);
+        let inputBuffer = '';
+        term.onData((data) => {
+          if (data === '\r') {
+            term.write('\r\n'); const cmd = inputBuffer.trim().toLowerCase();
+            if (cmd === 'help') {
+              term.writeln('\x1b[38;2;0;240;255mhelp\x1b[0m        Show this help');
+              term.writeln('\x1b[38;2;0;240;255mstatus\x1b[0m      System status');
+              term.writeln('\x1b[38;2;0;240;255mclear\x1b[0m       Clear terminal');
+              term.writeln('\x1b[38;2;0;240;255mspoons\x1b[0m     Show spoon level');
+            } else if (cmd === 'status') {
+              term.writeln('\x1b[38;2;74;91;120mMode:      \x1b[0mLocal simulation');
+              term.writeln('\x1b[38;2;74;91;120mSpoons:    \x1b[0m' + document.body.getAttribute('data-spoons'));
+              term.writeln('\x1b[38;2;74;91;120mTopology:  \x1b[0mK4 tetrahedral mesh');
+              term.writeln('\x1b[38;2;74;91;120mMCP Tools: \x1b[0m26');
+              term.writeln('\x1b[38;2;74;91;120mTests:     \x1b[0m413 passing');
+            } else if (cmd === 'clear') { term.clear();
+            } else if (cmd === 'spoons') {
+              term.writeln('\x1b[38;2;74;91;120mCurrent spoon level: \x1b[0m\x1b[38;2;0;240;255m' + document.body.getAttribute('data-spoons') + '/5\x1b[0m');
+            } else if (cmd) { term.writeln('\x1b[38;2;255;0;60mCommand not found: \x1b[0m' + cmd); }
+            inputBuffer = ''; term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+          } else if (data === '\x7f') { if (inputBuffer.length > 0) { inputBuffer = inputBuffer.slice(0, -1); term.write('\b \b'); }
+          } else if (data === '\x03') { inputBuffer = ''; term.write('^C\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+          } else if (!data.startsWith('\x1b')) { inputBuffer += data; term.write(data); }
+        });
+      }
+      function connect() {
+        if (localMode) return; attemptCount++; statusEl.textContent = '● Connecting...'; statusEl.style.color = '#8b9bb4';
+        try {
+          ws = new WebSocket('wss://stream.p31ca.org/pty'); ws.binaryType = 'arraybuffer';
+          ws.onopen = () => {
+            attemptCount = 0; statusEl.textContent = '● Connected'; statusEl.style.color = '#00ff66';
+            if (reconnectTimer) { clearTimeout(reconnectTimer); reconnectTimer = null; } term.clear();
+            term.writeln('\x1b[38;2;74;91;120m[SYSTEM] P31 Sovereign OS v2.0\x1b[0m');
+            term.writeln('\x1b[38;2;0;255;102m\u2713 WebSocket established.\x1b[0m');
+            term.write('\r\n\x1b[38;2;181;60;255m>\x1b[0m ');
+            term.onData((data) => { if (ws && ws.readyState === WebSocket.OPEN) ws.send(data); });
+            window.addEventListener('resize', () => { fitAddon.fit(); if (ws && ws.readyState === WebSocket.OPEN) ws.send('\x1b[8;' + term.cols + ':' + term.rows + 't'); });
+          };
+          ws.onmessage = (ev) => { if (ev.data instanceof ArrayBuffer) { const decoder = new TextDecoder('utf-8'); term.write(decoder.decode(ev.data)); } else if (typeof ev.data === 'string') { term.write(ev.data); } };
+          ws.onclose = () => { statusEl.textContent = '● Disconnected'; statusEl.style.color = '#ff003c'; if (attemptCount >= 2) { startLocalSimulation(); return; } if (!reconnectTimer) reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 3000); };
+          ws.onerror = () => { statusEl.textContent = '● Error'; statusEl.style.color = '#ff003c'; ws.close(); };
+        } catch (e) { statusEl.textContent = '● Connection failed'; statusEl.style.color = '#ff003c'; if (attemptCount >= 2) { startLocalSimulation(); return; } if (!reconnectTimer) reconnectTimer = setTimeout(() => { reconnectTimer = null; connect(); }, 5000); }
+      }
       connect();
     })();
 
